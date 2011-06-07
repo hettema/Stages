@@ -1,0 +1,19 @@
+<?php
+/**
+ * Settings links
+ * 
+ * @package Backend
+ * @subpackage Settings
+ * @category Html
+ * @uses Backend_Block_Template
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<div style="clear:both;">
+    <?php $action = App_Main::getRequest()->getActionName(); ?>
+
+    | <a href="<?php echo $this->getUrl('backend/config') ?>">Main Settings</a> |
+    <a href="<?php echo $this->getUrl('admin/user/list') ?>">Users</a>
+</div>
+<hr />

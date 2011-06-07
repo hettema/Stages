@@ -1,0 +1,22 @@
+<?php
+/**
+ * Footer Pagelinks
+ * 
+ * @package Page
+ * @subpackage Footer
+ * @category Html
+ * @uses Core_Block_Template
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<?php if($this->getSession()->getUser()): ?>
+<footer class="usr"><?php echo $this->getSession()->getUser()->getName() ?> | 
+    <a href="<?php echo $this->getUrl('stages/user/refresh_projects') ?>">Refresh Projects</a> |
+    <a href="<?php echo $this->getUrl('project/create') ?>">Create Project</a> | 
+    <a href="<?php echo $this->getUrl('project/index/view') ?>">View Project</a> | 
+    <a href="<?php echo $this->getUrl('stages/index/logout') ?>">Sign out</a>
+</footer>
+<?php endif; ?>
+
+<img src="<?php echo $this->getSkinUrl('img/border.png') ?>" id="border" />

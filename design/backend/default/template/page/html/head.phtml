@@ -1,0 +1,33 @@
+<?php
+/**
+ * Page  Head HTML
+ * 
+ * @package Backend
+ * @subpackage Head
+ * @category Html
+ * @uses Backend_Block_Page_Head
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<head>
+    <title><?php echo $this->getTitle() ?></title>
+    <meta http-equiv="Content-Type" content="<?php echo $this->getContentType() ?>" />
+    <meta name="description" content="<?php echo htmlspecialchars($this->getDescription()) ?>" />
+    <meta name="keywords" content="<?php echo htmlspecialchars($this->getKeywords()) ?>" />
+    <meta name="robots" content="<?php echo htmlspecialchars($this->getRobots()) ?>" />
+
+    <link rel="icon" href="<?php echo $this->getSkinUrl('favicon.ico') ?>" type="image/x-icon" />
+    <link rel="shortcut icon" href="<?php echo $this->getSkinUrl('favicon.ico') ?>" type="image/x-icon" />
+    <link href="<?php echo $this->getSkinUrl('css/style.css'); ?>" rel="stylesheet" type="text/css" />
+
+    <!--[if lt IE 8]><?php echo $this->getSkinUrl('css/browser_specific/ltie8.css'); ?>" rel="stylesheet" type="text/css" /><![endif]-->
+    <!--[if IE 6]><link href="<?php echo $this->getSkinUrl('css/browser_specific/ie6.css'); ?>" rel="stylesheet" type="text/css" /><![endif]-->
+
+    <script type="text/javascript" src="<?php echo $this->getSkinUrl('js/jquery.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $this->getSkinUrl('js/cgs/functions.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $this->getSkinUrl('js/cgs/eav_edit.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $this->getSkinUrl('js/cgs/eav_edit_form.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $this->getSkinUrl('js/cgs/form.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $this->getSkinUrl('js/cgs/calendar.js') ?>"></script>
+</head>

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <default>
+        <block type="page/html" name="root" output="toHtml" template="page/2columns-left.phtml">
+
+            <block type="backend/page_head" name="head" as="head" >
+
+            </block>
+
+            <block type="backend/page_notices" name="global_notices" as="global_notices" template="page/html/notices.phtml" />
+
+            <block type="backend/page_header" name="header" as="header">
+                <block type="core/session_messages" name="session_messages" as="session_messages" />
+            </block>
+            <block type="backend/text_list" name="left" as="left">
+                <block type="backend/template" name="navigation-left" as="navifation-left" template="catalog/navigation/left.phtml"/>
+            </block>
+
+            <block type="backend/text_list" name="content" as="content">
+                <block type="backend/template" name="header_bottom" as="header_bottom" template="page/html/header_bottom.phtml" />
+            </block>
+
+            <block type="backend/text_list" name="right" as="right"/>
+
+            <block type="backend/page_footer" name="footer" as="footer" template="page/html/footer.phtml">
+                <block type="backend/template" name="copyright" as="copryright" template="page/html/footer/copyright.phtml"/>
+                <block type="backend/template" name="footer_links" as="footer_links" template="page/html/footer/footer_links.phtml"/>
+            </block>
+
+            <block type="backend/text_list" name="before_body_end" as="before_body_end">
+                <block type="backend/template" name="footer_js" as="footer_js" template="page/html/footer/footer_js.phtml"/>
+            </block>
+        </block>
+    </default>
+</layout>

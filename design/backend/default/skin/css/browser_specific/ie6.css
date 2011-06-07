@@ -1,0 +1,11 @@
+/* -- Browser Specific Document Setup -- */
+/* --------------------------------------------------------------------------- */
+
+body { behavior:url("browser_specific/csshover3.htc"); }
+#content { width: 780px; }
+#wrapper { background:none; }
+
+#header_search { width:225px; }
+
+
+/* --------------------------------------------------------------------------- */

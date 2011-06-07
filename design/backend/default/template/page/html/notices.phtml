@@ -1,0 +1,25 @@
+<?php
+/**
+ * Page Notices
+ * 
+ * @package Backend
+ * @subpackage Notices
+ * @category Html
+ * @uses Backend_Block_Page_Notices
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<?php if ($this->displayNoscriptNotice()): ?>
+    <noscript>
+        <div class="noscript">
+            <div class="noscript-inner">
+                <p><strong><?php echo $this->__('We detected that your JavaScript seem to be disabled.'); ?></strong></p>
+                <p><?php echo $this->__('You must have JavaScript enabled in your browser to utilize the functionality of this website.'); ?></p>
+            </div>
+        </div>
+    </noscript>
+<?php endif; ?>
+<?php if ($this->displayDemoNotice()): ?>
+    <p class="demo-notice"><?php echo $this->__('This is a demo site. You may encounter with errors and jitters heare and theare. please bear with us for some time for a fullt  functional version.') ?></p>
+<?php endif; ?>

@@ -1,0 +1,198 @@
+<?php
+/**
+ * Visitor log list
+ * 
+ * @package Visitor
+ * @category Html
+ * @uses Visitor_Block_List
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<?php echo $this->getChildHtml('toolbar') ?>
+<?php
+$resultCollection = $this->getResultCollection();
+$collection = $resultCollection->getCollection();
+$collection = empty ($collection) ? array() : $collection;
+
+$filters = $resultCollection->getFilters();
+if(!$filters instanceof Core_Model_Object) {
+    $filters = App_Main::getModel('core/object');
+}
+if($resultCollection->getPage()) {
+    $sIdx = ($resultCollection->getPage() - 1) * $resultCollection->getLimit();
+} else {
+    $sIdx = 0;
+}
+?>
+<div class="filters-wrap lables-as-block list-visitors">
+<form name="list-filter-form" id="list-filter-form" method="GET" action="<?php echo $this->getUrl('backend/visitor') ?>">
+    <input type="hidden" name="order_by" id="filter_order_by" value="<?php echo $filters->getOrderBy() ?>">
+    <input type="hidden" name="page" id="filter_page" value="1">
+    <div class="filter-wrap">
+        <label>From <input type="text" class="text cal-input" name="date_from" id="filter_date_from" size="10" value="<?php echo $filters->getDateFrom();?>" readonly="1" class="cal-input" onmousedown="Calendar.popup(this);"/></label>
+    </div>
+    <div class="filter-wrap">
+        <label>To <input type="text" class="text cal-input" name="date_to" id="filter_date_to" size="10" value="<?php echo $filters->getDateTo();?>" readonly="1" class="cal-input" onmousedown="Calendar.popup(this);"/></label>
+    </div>
+    <div class="filter-wrap">
+        <label>Source / Referer <select name="redirect_source"  class="select" id="filter_redirect_source">
+                              <option value="">Show All &nbsp;</option>
+                              <?php
+                              foreach($this->getRedirectSourceOptionList() as $value=>$option) :
+                              $selected = $value == $filters->getRedirectSource() ? 'selected' : '';
+                              ?>
+                              <option value="<?php echo $value; ?>" <?php echo $selected; ?>><?php echo $option; ?></option>
+                              <?php endforeach; ?>
+                              </select>
+        </label>
+    </div>
+    <?php /*<div class="filter-wrap">
+        <label>Browser <select name="browser" class="select" id="filter_browser">
+                             <option value="">All Browsers</option>
+                              <?php
+                              foreach($this->getBrowserOptionList() as $option) :
+                              $selected = $option == $filters->getBrowser() ? 'selected' : '';
+                              ?>
+                              <option value="<?php echo $option; ?>" <?php echo $selected; ?>><?php echo $option; ?></option>
+                              <?php endforeach; ?>
+                       </select>
+        </label>
+    </div>
+    <div class="filter-wrap">
+        <label>OS <select name="os" class="select" id="filter_os">
+                             <option value="">All OS</option>
+                              <?php
+                              foreach($this->getOsOptionList() as $option) :
+                              $selected = $option == $filters->getOs() ? 'selected' : '';
+                              ?>
+                              <option value="<?php echo $option; ?>" <?php echo $selected; ?>><?php echo $option; ?></option>
+                              <?php endforeach; ?>
+                  </select>
+        </label>
+    </div> */ ?>
+    <div class="filter-wrap">
+        <label>Visited Url<input type="text" class="text" value="<?php echo $filters->getUrl(); ?>" name="url" id="filter_url" /></label>
+    </div>
+    <div class="filter-wrap">
+        <label>Min page Visit <select name="min_page_visit" class="select" id="filter_min_page_visit">
+                             <option value="">Show All &nbsp;</option>
+                              <?php
+                              foreach($this->getMinPageVisitOptionList() as $option) :
+                              $selected = $option == $filters->getMinPageVisit() ? 'selected' : '';
+                              ?>
+                              <option value="<?php echo $option; ?>" <?php echo $selected; ?>><?php echo $option; ?></option>
+                              <?php endforeach; ?>
+                              </select>
+        </label>
+    </div>
+    <div class="filter-wrap">
+        <label>Limit By <select name="limit"  class="select" id="filter_limit">
+                              <?php
+                              foreach(array(20,30,50,100,200,500) as $option) :
+                              $selected = $option == $filters->getLimit() ? 'selected' : '';
+                              ?>
+                              <option value="<?php echo $option; ?>" <?php echo $selected; ?>><?php echo $option; ?></option>
+                              <?php endforeach; ?>
+                              </select>
+        </label>
+    </div>
+    <!--div class="filter-wrap">
+        <label>Hide Me <input type="checkbox" name="hide_me" id="filter_hide_me" <?php if($filters->getHideMe()) echo 'checked'; ?>></label>
+    </div-->
+    <div class="filter-wrap">
+        <label>No Robots <input type="checkbox" name="no_robots" id="filter_no_robots" <?php if($filters->getNoRobots()) echo 'checked'; ?>></label>
+    </div>
+    <!--div class="filter-wrap">
+        <label>Hide Proxy <input type="checkbox" name="hide_proxy" id="filter_hide_proxy" <?php if($filters->getHideProxy()) echo 'checked'; ?>></label>
+    </div-->
+    <div class="filter-wrap">
+        <label title="Hide Proxy Pings">Hide Proxy <input type="checkbox" name="hide_proxy_ping" id="filter_hide_proxy_ping" <?php if($filters->getHideProxyPing()) echo 'checked'; ?>></label>
+    </div>
+    <div class="filter-wrap">
+        <label>Blogger Redirects <input type="checkbox" name="show_blogger_redirects" id="filter_show_blogger_redirects" <?php if($filters->getShowBloggerRedirects()) echo 'checked'; ?>></label>
+    </div>
+    <!--div class="filter-wrap">
+        <label>Group IP <input type="checkbox" name="group_by" id="filter_group_ip" value="ip" <?php if($filters->getGroupBy() == 'ip') echo 'checked'; ?>></label>
+    </div-->
+    <div class="filter-wrap">
+        <br/><input type="submit" value="Search" class="submit">
+    </div>
+</form>
+</div>
+
+<table cellpadding="0" cellspacing="0" border="0" class="entity-list-table narrowed-list">
+    <col width="4%">
+    <col width="10%">
+    <col width="6%">
+    <col width="14%">
+    <col width="14%">
+    <col width="52%">
+    <tr>
+        <th>No.</th>
+        <th>Ip Address</th>
+        <th>Visits</th>
+        <th>Visited at</th>
+        <th>Time on Site</th>
+        <th>Source/Referer Url</th>
+    </tr>
+<?php 
+    $prevDate = false;
+    foreach($collection as $_item):
+        $sIdx++;
+        $visitorId = $_item->getVisitorId();
+    ?>
+    <?php if($prevDate != date('Y-m-d',$_item->getFirstVisitTs())): $prevDate = date('Y-m-d',$_item->getFirstVisitTs()); ?>
+    <tr class="visitor-log-row"><td class="visitor-row-date" colspan="6"><?php echo $prevDate; ?></td></tr>
+    <?php endif; ?>
+    <tr id="visitor-row-<?php echo $visitorId ?>" class="visitor-log-row" title="" onmouseover="toggleHover(this,true); visitorLogs.showLocation(<?php echo $visitorId ?>);" onmouseout="toggleHover(this,false);visitorLogs.hideLocation(<?php echo $visitorId ?>);" onclick="visitorLogs.showHideUrls(<?php echo $visitorId ?>)">
+        <td><?php echo $sIdx; ?></td>
+        <td><?php echo long2ip($_item->getIpAddress()); ?></td>
+        <td><?php echo $_item->getTotalVisits(); ?></td>
+        <td><?php echo date('h:i:s',$_item->getFirstVisitTs()); ?> - <?php echo date('h:i:s',$_item->getLastVisitTs()); ?></td>
+        <td><?php echo date('H:i:s', ($_item->getLastVisitTs() - $_item->getFirstVisitTs())); ?></td>
+        <td><?php echo mb_substr($_item->getReferer(),0, 90); ?></td>
+    </tr><!-- end of row -->
+<?php endforeach; ?>
+</table>
+<?php echo $this->getChildHtml('toolbar') ?>
+<script type="text/javascript">
+function VistorLogs()
+{
+    this.showLocation = function(visitorId)
+    {
+
+    };
+
+    this.hideLocation = function(visitorId)
+    {
+
+    };
+
+    this.showHideUrls = function(visitorId)
+    {
+        var visitorRowElm = document.getElementById('visitor-row-' + visitorId);
+        if(!visitorRowElm) return false;
+        if(document.getElementById('visitor-info-td-'+visitorId)) {
+            removeElement(document.getElementById('visitor-info-td-'+visitorId));
+            return false;
+        }
+
+        infoTr = drawElement({tag:'tr'});
+        infoTd = drawChildElement(infoTr, {tag:'td', colspan:7, id : 'visitor-info-td-' + visitorId, css_class:'visitor-logs-info-wrap' });
+        drawChildElement(infoTd, {tag:'div', align:'center', css_class:'loading width-full' });
+        visitorRowElm.parentNode.insertBefore(infoTr, visitorRowElm.nextSibling);
+
+        $.ajax({url: getUrl('backend/visitor/visitor_urls')+'?visitorId='+visitorId , success: this.afterShowUrl, dataType: 'json'});
+    };
+
+    this.afterShowUrl = function(response)
+    {
+        var visitorId = response.visitorId;
+        if(!document.getElementById('visitor-info-td-'+visitorId)) { return; }
+
+        document.getElementById('visitor-info-td-'+visitorId).innerHTML = response.url_html;
+    };
+}
+var visitorLogs = new VistorLogs();
+</script>

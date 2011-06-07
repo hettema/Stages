@@ -1,0 +1,27 @@
+<?php
+/**
+ * Header bottom block template
+ * 
+ * @package Backend
+ * @subpackage Header
+ * @category Html
+ * @uses Backend_Block_Template
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<?php
+$menuItems = array();
+$menuItems['backend/widfy/list_user'] = 'Users';
+$menuItems['backend/visitor'] = 'Visitors';
+$menuItems['backend/config'] = 'Settings';
+$_session = App_Main::getAdminSession();
+?>
+
+<div class="tabbar-wrap">
+    <ul>
+        <?php foreach($menuItems as $resourceId=>$title): ?>
+        <li><a href="<?php echo $this->getUrl($resourceId) ?>"><?php echo $title ?></a></li>
+        <?php endforeach; ?>
+    </ul>
+</div>

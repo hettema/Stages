@@ -1,0 +1,202 @@
+/* Reset some common tags */
+html, body, div, ul, ol, dl, dd, dt li, h1, h2, h3, h4, h5, p, a, form, blockquote, img, a img, fieldset {
+	margin: 0;
+	padding: 0;
+	outline: none;
+	border: none;
+	text-decoration: none;
+}
+
+html		{ background:#202020 url(../img/bg_html.gif) repeat; height:100%; }
+body 		{ font:12px/16px "Helvetica Neue", Helvetica, Arial, sans-serif; color:#fff; height:100%; }
+
+
+/* -- Common tags ----------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+h1									{  }
+h2									{  }
+h3									{  }
+h4 									{  }
+h5									{  }
+p, ul, ol, table, dl, blockquote 	{ margin:16px 0; }
+img									{ display:block; }
+a									{  }
+a:hover								{  }
+a:visited							{  }
+strong								{  }
+em									{  }
+#border								{ position:absolute; top:0; left:0; width:100%; height:8px; }
+.usr								{ z-index:4; position:absolute; top:6px; right:5px; background:#4f4f4f; padding:2px 5px; color:#ddd; text-shadow:1px 1px 1px rgba(0,0,0,0.5);
+									  -moz-border-radius-bottomright:5px; -webkit-border-bottom-right-radius:5px; border-bottom-right-radius:5px;
+				  					  -moz-border-radius-bottomleft:5px; -webkit-border-bottom-left-radius:5px; border-bottom-left-radius:5px;
+									}
+.usr a								{ font-weight:bold; color:#fff; }
+.usr a:hover						{ text-decoration:underline; }
+.qtip-content						{ text-transform:uppercase; font-size:9px; line-height:9px; }
+
+
+/* -- Forms ----------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+div.form_row 	{ width:100%; float:left; display:inline; clear:both; margin-bottom:20px; }
+input, select 	{ outline:none; }
+input.text,
+select			{ height:23px; margin:0; padding:0; border:3px solid #fff; background:url(../img/bg_input.png) 0 0 repeat-x;
+				  -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px;
+				  -webkit-box-shadow:inset 2px 2px 3px rgba(0,0,0,0.2); -moz-box-shadow:inset 2px 2px 3px rgba(0,0,0,0.2); box-shadow:inset 2px 2px 3px rgba(0,0,0,0.2);
+				}
+input.slct		{ background:#eaeaea url(../img/bg_select.png) right 0 no-repeat;
+				}				
+label			{ font-size:14px; line-height:30px; text-transform:uppercase; color:#fff; font-weight:bold; text-shadow:1px 1px 0 #000; }
+
+#qform .col		{ float:left; display:inline; margin:2px 5px 3px 5px; }
+#qform .text	{ display:block; float:left; clear:both; margin-top:2px; border-width:2px; padding:0 5px; }
+#qform label	{ text-align:left; float:left; display:inline; clear:both; font-size:12px; line-height:12px; }
+#qform #qdate	{ width:70px; }
+#qform #qms		{ width:150px; }
+
+
+
+/* -- Header ---------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+#logo			{ width:50%; position:absolute; top:50px; margin:0 0 0 -220px; padding:30px 50px 30px 0; background:url(../img/bg_logo.gif) repeat;
+				  -moz-border-radius-topright:10px; -webkit-border-top-right-radius:10px; border-top-right-radius:10px;
+				  -moz-border-radius-bottomright:10px; -webkit-border-bottom-right-radius:10px; border-bottom-right-radius:10px;
+				  -webkit-box-shadow:inset 1px 1px 0 rgba(0,0,0,0.5), 1px 1px 0 #323232; -moz-box-shadow:inset 1px 1px 0 rgba(0,0,0,0.5), 1px 1px 0 #323232;
+				  box-shadow:inset 1px 1px 0 rgba(0,0,0,0.6), 1px 1px 0 #323232;
+				}
+#logo:hover		{ -webkit-box-shadow:inset 1px 1px 0 rgba(0,0,0,0.5), 1px 1px 0 rgba(255,255,255,0.125); -moz-box-shadow:inset 1px 1px 0 rgba(0,0,0,0.5), 1px 1px 0 rgba(255,255,255,0.125);
+				  box-shadow:inset 1px 1px 0 rgba(0,0,0,0.6), 1px 1px 0 rgba(255,255,255,0.125);
+				}				
+#logo a			{ width:165px; height:115px; float:right; display:inline; text-indent:-999999px; background:url(../img/logo.png) 0 0 no-repeat; }
+#logo a:hover	{ background-position:0 -115px; }
+
+
+/* -- Top Form -------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+#io				{ width:540px; position:absolute; top:50px; left:50%; margin:0 0 0 -140px; }
+#io label		{ width:170px; float:left; display:inline; text-align:right; margin:0 20px 0 0; }
+#io .text		{ width:330px; float:left; display:inline; padding:0 5px; }
+#io .key		{ width:340px; float:left; display:inline; list-style:none; margin:0; }
+#io .key li		{ float:left; display:inline; font-size:11px; text-transform:uppercase; color:#ddd; line-height:normal; margin:10px 15px 0 0; }
+#io .key span	{ width:25px; height:10px; display:inline-block; }
+#io .mktng		{ background:url(../img/marketing.gif) 0 0 repeat; }
+#io .dvlp		{ background:#ddd; }
+#io img			{ display:inline; }
+
+
+/* -- Timeline -------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+#prjct			{ position:absolute; top:20px; left:0; width:100%; height:25px; display:block; background:url(../img/timeline/bg_header.gif) 0 15px repeat-x; }
+#prjct h1		{ font-size:25px; line-height:25px; margin-left:20px; background:url(../img/bg_html.gif) repeat; float:left; display:inline; padding:0 10px; }
+#tw				{ position:relative; width:95%; height:600px; margin:270px auto 0 auto; display:block; }
+#tw .week		{ position:relative; width:187px; height:75%; list-style:none; float:left; display:inline; }
+/*#tw .week1		{ margin:0 0 0 -390px; }
+#tw .week2		{ margin:0 0 0 -190px; }
+#tw .week3		{ margin:0 0 0 10px; }
+#tw .week4		{ margin:0 0 0 210px; }*/
+#tw ul			{ margin:0 12px 0 0; list-style:none; }
+.week li		{ position:relative; width:23px; height:100%; float:left; display:inline; background:rgba(255,255,255,0.02); border-left:1px dashed #323232; border-right:1px dashed #323232; margin-right:2px; }
+.week li.last	{ margin:0; }
+.week li:hover	{ background:rgba(255,255,255,0.03); border-left:1px dashed #393939; border-right:1px dashed #393939; }
+.week li.today	{ background:rgba(255,255,255,0.05); border-left:1px dotted #444; border-right:1px dotted #444; }
+.week li.we		{ width:25px; border:0; background:rgba(50,50,50,0.5); }
+#tw .mday		{ position:absolute; top:-10px; left:-1px; width:23px; height:10px; text-align:center; font-size:8px; line-height:8px; color:#555; border-left:1px dashed #323232; border-right:1px dashed #323232; }
+#tw .dday		{ position:absolute; bottom:-14px; left:-1px; width:23px; height:10px; text-align:center; font-size:8px; line-height:8px; color:#555; border-left:1px dashed #323232; border-right:1px dashed #323232; }
+#tw li.today .mday		{ color:#999; font-weight:bold; border-left:1px dotted #444; border-right:1px dotted #444; }
+#tw li.today .dday		{ color:#999; font-weight:bold; border-left:1px dotted #444; border-right:1px dotted #444; }
+#tw .mtrouble	{ z-index:3; position:absolute; top:20%; left:0; width:100%; height:14px; background:url(../img/timeline/trouble.png) 50% 0 no-repeat; }
+#tw .dtrouble	{ z-index:3; position:absolute; bottom:20%; left:0; width:100%; height:14px; background:url(../img/timeline/trouble.png) 50% 0 no-repeat; }
+#tw .avatar				{ position:absolute; opacity:.75; }
+#tw li:hover .avatar	{ opacity:1; }
+#tw dl			{ width:25px; height:100%; margin:0; left:-1px; position:absolute; }
+#tw dt			{ width:25px; height:10px; position:absolute; z-index:2; }
+#tw dt:hover	{ cursor:pointer; }
+#tw dt a		{ width:25px; height:10px; display:block; text-indent:-999999px; display:none; }
+#tw dl.ms dt a	{ display:block; }
+#tw dd			{ width:25px; position:absolute; left:0; }
+.mavatars		{ position:absolute; width:100%; height:25px; top:15%; left:0; background:url(../img/timeline/avatars.png) 0 0 repeat-x; }
+.davatars		{ position:absolute; width:100%; height:25px; bottom:10%; left:0; background:url(../img/timeline/avatars.png) 0 0 repeat-x; }
+.ms_t			{ width:70px; font-size:9px; text-align:left; background:#ddd; position:absolute; color:#000; text-transform:uppercase; padding:0 2px; white-space:nowrap; }
+.ms_t img		{ position:absolute; }
+#timeline header{ width:80px; position:absolute; top:50%; left:50%; margin:-8px 0 0 -480px; padding:0 10px 0 0; text-align:right; }
+#timeline footer{ width:80px; position:absolute; top:50%; left:50%; margin:-8px 0 0 398px; padding:0 0 0 10px; text-align:left; }
+#timeline h1	{ font-size:14px; text-transform:uppercase; line-height:14px; }
+#timeline h2	{ font-size:12px; color:#999; font-weight:normal; }
+#tw dd.hist		{ background:none; border-top:1px dashed #393939; }
+a.add_week		{ width:16px; height:16px; position:absolute; top:50px; left:50%; margin:0 0 0 405px; text-indent:-999999px;
+				  background:url(../img/btn_week.png) 0 0 no-repeat;
+				}
+a.add_week:hover{ background-position:0 -16px; }				
+
+/* -- Marketing -- */
+#tw .mrkt			{ position:relative; height:50%; top:0; left:0; }
+#tw	.mrkt dl		{ top:0; }
+.mrkt .ms dt a		{ background:url(../img/timeline/marketing/ms.png) 0 0 no-repeat; }
+.mrkt dt			{ bottom:2px; background:url(../img/timeline/marketing/mrkt.png) repeat; }
+.mrkt .fin dt		{ background:url(../img/timeline/marketing/fin.png) repeat; }
+.mrkt .start dt		{ background:url(../img/timeline/marketing/started.png) repeat; }
+.mrkt .non dt		{ background:url(../img/timeline/marketing/non.png) repeat; }
+.mrkt dd			{ bottom:2px; }
+.mrkt .fin dd		{ background:url(../img/timeline/marketing/fin.png) repeat; }
+.mrkt .start dd		{ background:url(../img/timeline/marketing/started.png) repeat; }
+.mrkt .non dd		{ background:url(../img/timeline/marketing/non.png) repeat; }
+#tw .mrkt .avatar	{ top:2px; left:1px; }
+.mrkt .ms_t			{ top:-55px; left:0;
+					  -moz-transform: rotate(-30deg);  /* FF3.5+ */
+       				  -o-transform: rotate(-30deg);  /* Opera 10.5 */
+  					  -webkit-transform: rotate(-30deg);  /* Saf3.1+, Chrome */
+      				  -ms-transform: rotate(-30deg);  /* IE9 */
+          			  transform: rotate(-30deg);  
+					}
+.mrkt .ms_t img		{ bottom:-7px; left:0; }
+
+/*-- Dev -- */
+#tw .dev			{ position:relative; height:50%; top:0; left:0; }
+#tw .dev dl			{ bottom:0; }
+.dev dt:hover		{ background:#fff; }
+.dev .ms dt a		{ background:url(../img/timeline/dev/ms.png) 0 0 no-repeat; }
+.dev dt				{ top:2px; background:#ddd; }
+.dev .fin dt		{ background:#a3ba1c; }
+.dev .start dt		{ background:#fff568; }
+.dev .non dt		{ background:#7b2e00; }
+.dev dd				{ top:2px; }
+.dev .fin dd		{ background:#a3ba1c; }
+.dev .start dd		{ background:#fff568; }
+.dev .non dd		{ background:#7b2e00; }
+#tw .dev .avatar	{ bottom:1px; left:1px; }
+.dev .ms_t			{ bottom:-55px; left:0;
+					  -moz-transform: rotate(30deg);  /* FF3.5+ */
+       				  -o-transform: rotate(30deg);  /* Opera 10.5 */
+  					  -webkit-transform: rotate(30deg);  /* Saf3.1+, Chrome */
+      				  -ms-transform: rotate(30deg);  /* IE9 */
+          			  transform: rotate(30deg);  
+					}
+.dev .ms_t img		{ top:-7px; left:0; }
+
+
+/* -- Scrollable -- */
+.scrollable 		{ position:relative; width:785px; height:600px; left:50%; overflow:hidden; margin:90px 0 0 -388px; float:left; display:inline; }
+.scrollable .items 	{ width:20000em; height:600px; position:absolute; }
+
+
+
+/* -- Homepage -------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+body.home			{ height:auto; }
+body.home #tw		{ height:300px; }
+.btn_create	a		{ width:400px; height:46px; position:absolute; bottom:-80px; left:50%; margin:0 0 0 -200px; border:2px solid #777; font-weight:bold; font-size:17px; line-height:46px; color:#ccc;
+					  text-transform:uppercase; background:url(../img/btn_create.png) repeat; text-shadow:1px 1px 3px rgba(0,0,0,0.5); text-align:center;
+					  -webkit-border-radius:10px; -moz-border-radius:10px; border-radius:10px;
+					}
+.btn_create	span	{ width:50px; height:46px; float:left; display:inline; background:#777 url(../img/icn_bc.png) 50% 50% no-repeat;
+					  -moz-border-radius-topleft:5px; -webkit-border-top-left-radius:5px; border-top-left-radius:5px;
+				  	  -moz-border-radius-bottomleft:5px; -webkit-border-bottom-left-radius:5px; border-bottom-left-radius:5px;
+					}
+.btn_create a:hover	{ color:#fff; background:#555; }
+body.home .scrollable,
+body.home .items	 { height:300px; margin-top:23px; }
+
+
+/* -- Projects page --------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+body.project #io	{ top:125px; }

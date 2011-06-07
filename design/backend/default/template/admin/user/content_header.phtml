@@ -1,0 +1,33 @@
+<?php
+/**
+ * Admin user edit page header
+ * 
+ * @package Admin
+ * @subpackage User
+ * @category Html
+ * @uses Backend_Block_Template
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?><?php
+$action = App_Main::getRequest()->getActionName();
+?>
+<div id="header">
+    <?php if($action == 'index' || $action == 'list'): ?>
+            <div class="button"><a href="<?php echo $this->getUrl('admin/user/add') ?>">Add new user</a></div>
+    <?php endif; ?>
+
+    <?php if($action =='view'):
+        $user = App_Main::getSingleton('catalog/user');
+    ?>
+        <div class="button"><a href="<?php echo $this->getUrl('admin/user/edit') ?>?id=<?php echo $user->getId(); ?>">Edit this user</a></div>
+    <?php endif; ?>
+
+    <?php if($action == 'add' || $action == 'edit'): ?>
+        <div class="button"><a href="<?php echo $this->getUrl('admin/user/list') ?>">View all Users</a></div>
+    <?php endif; ?>
+
+    <?php if($action == 'edit' && $this->getRequest()->getParam('id')): ?>
+        <div class="button btn_delete"><a href="<?php echo $this->getUrl('admin/user/delete') ?>?id=<?php echo $this->getRequest()->getParam('id'); ?>">Delete</a></div>
+    <?php endif; ?>
+</div>

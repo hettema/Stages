@@ -1,0 +1,19 @@
+1.1.1
+-----
+
+Fix issue when return XML is a single space
+
+1.1
+---
+
+Add copyProject() method
+
+1.0.1
+-----
+
+update README examples, make id tests more strict
+
+1.0
+---
+
+initial release

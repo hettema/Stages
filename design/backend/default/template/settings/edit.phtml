@@ -1,0 +1,177 @@
+<?php
+/**
+ * Settings Edit page
+ * 
+ * @package Backend
+ * @subpackage Settings
+ * @category Html
+ * @uses Backend_Block_Settings_Edit
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<?php
+$configAttributes['common'][] = array('title'=>'Default Title', 'path'=>'website-default-title', 'type' => 'text', 'default'=>'', 'attribs'=>'size="50"');
+$configAttributes['common'][] = array('title'=>'Title Prefix', 'path'=>'website-title-prefix', 'type' => 'text', 'default'=>'', 'attribs'=>'size="50"');
+$configAttributes['common'][] = array('title'=>'Title Suffix', 'path'=>'website-title-suffix', 'type' => 'text', 'default'=>'', 'attribs'=>'size="50"');
+$configAttributes['common'][] = array('title'=>'Logo Alt Text', 'path'=>'website-logo-alt', 'type' => 'text', 'default'=>'', 'attribs'=>'size="50"');
+$configAttributes['common'][] = array('title'=>'Meta Keywords', 'path'=>'website-default-keywords', 'type' => 'text', 'default'=>'', 'attribs'=>'maxlength="255" size="100"');
+$configAttributes['common'][] = array('title'=>'Meta Description', 'path'=>'website-default-metadesciption', 'type' => 'text', 'default'=>'', 'attribs'=>'maxlength="255" size="100" ');
+
+$configAttributes['locale'][] = array('title'=>'Timezone', 'path'=>'web-default-timezone', 'type' => 'select', 'default'=>'UTC', 'optionmethod'=>'getTimezoneOptionList');
+$configAttributes['locale'][] = array('title'=>'Language', 'path'=>'web-default-language', 'type' => 'select', 'default'=>'en','optionmethod'=>'getLanguageOptionList');
+$configAttributes['locale'][] = array('title'=>'Locale', 'path'=>'web-default-locale', 'type' => 'text', 'default'=>'en_US',);
+$configAttributes['locale'][] = array('title'=>'Theme', 'path'=>'web-design-default-theme', 'type' => 'select', 'default'=>'default','optionmethod'=>'getFrontDesignThemeList');
+
+$configAttributes['url'][]    = array('title'=>'Use secure url', 'path'=>'web-secure-backend', 'type' => 'boolean', 'default'=>0, 'is_global'=>1 );
+$configAttributes['url'][]    = array('title'=>'Base Url', 'path'=>'web-unsecure-base-url', 'type' => 'text', 'default'=>'', 'attribs'=>'size="70"' );
+$configAttributes['url'][]    = array('title'=>'Base Secure Url', 'path'=>'web-secure-base-url', 'type' => 'text', 'default'=>'', 'attribs'=>'size="70"' );
+$configAttributes['url'][]    = array('title'=>'Use CDN for Images', 'path'=>'design-image-cdn-enabled', 'type' => 'boolean', 'default'=>0, 'is_global'=>1 );
+$configAttributes['url'][]    = array('title'=>'CDN Base Url (Images)', 'path'=>'web-design-image-cdn-url', 'type' => 'text', 'default'=>'', 'attribs'=>'size="70"', 'is_global'=>1 );
+$configAttributes['url'][]    = array('title'=>'Use CDN for Js', 'path'=>'design-js-cdn-enabled', 'type' => 'boolean', 'default'=>0, 'is_global'=>1 );
+$configAttributes['url'][]    = array('title'=>'CDN Base Url (JS)', 'path'=>'web-design-js-cdn-url', 'type' => 'text', 'default'=>'', 'attribs'=>'size="70"', 'is_global'=>1 );
+
+$configAttributes['email'][]    = array('title'=>'Enable Email', 'path'=>'mail-enabled', 'type' => 'boolean', 'default'=>0, 'is_global'=>1 );
+$configAttributes['email'][]    = array('title'=>'Default Mail Sender Name', 'path'=>'mail-default-sender-name', 'type' => 'text', 'default'=>'', 'attribs'=>'size="50"');
+$configAttributes['email'][]    = array('title'=>'Default Mail Sender Email', 'path'=>'mail-default-sender-email', 'type' => 'text', 'default'=>'', 'attribs'=>'size="50"');
+$configAttributes['email'][]    = array('title'=>'Contacts Mail Sender Name', 'path'=>'mail-contacts-sender-name', 'type' => 'text', 'default'=>'', 'attribs'=>'size="50"');
+$configAttributes['email'][]    = array('title'=>'Contacts Mail Sender Email', 'path'=>'mail-contacts-sender-email', 'type' => 'text', 'default'=>'', 'attribs'=>'size="50"');
+$configAttributes['email'][]    = array('title'=>'Send a copy of all email to', 'path'=>'mail-default-bcc-email', 'type' => 'text', 'default'=>'', 'attribs'=>'size="50"');
+
+$configAttributes['session'][]    = array('title'=>'Session lifetime', 'path'=>'session-cookie-lifetime', 'type' => 'text', 'default'=>'3600', 'attribs'=>'size="8"', 'is_global'=>1 );
+$configAttributes['session'][]    = array('title'=>'Use session key in url', 'path'=>'session-sessionkey-url', 'type' => 'boolean', 'default'=>0);
+$configAttributes['session'][]    = array('title'=>'Log Visitor Info & Urls', 'path'=>'session-log-visitors', 'type' => 'boolean', 'default'=>0);
+
+$configAttributes['countryfilter'][]    = array('title'=>'Enable Country Filter', 'path'=>'country_filter_enabled', 'type' => 'boolean', 'default'=>'0');
+$configAttributes['countryfilter'][]    = array('title'=>'Allow Countries', 'path'=>'country_filter_allow_list', 'type' => 'multi-select', 'optionmethod'=>'getCountryOptionList', 'default'=>'', 'attribs' => 'size="10"');
+$configAttributes['countryfilter'][]    = array('title'=>'Deny Countries', 'path'=>'country_filter_deny_list', 'type' => 'multi-select', 'optionmethod'=>'getCountryOptionList', 'default'=>'', 'attribs' => 'size="10"');
+$configAttributes['countryfilter'][]    = array('title'=>'URLs (comma separated, * to apply to all)', 'path'=>'country_filter_restricted_url_list', 'type' => 'text', 'default'=>'*', 'attribs' => 'size="80"');
+
+$configAttributes['ipfilter'][]    = array('title'=>'Enable IP Filter', 'path'=>'ip_filter_enabled', 'type' => 'boolean', 'default'=>'0');
+$configAttributes['ipfilter'][]    = array('title'=>'Allow IP(comma separated)', 'path'=>'ip_filter_allow_list', 'type' => 'text', 'default'=>'', 'attribs' => 'size="50"');
+$configAttributes['ipfilter'][]    = array('title'=>'Deny IP(comma separated)', 'path'=>'ip_filter_deny_list', 'type' => 'text', 'default'=>'', 'attribs' => 'size="50"');
+$configAttributes['ipfilter'][]    = array('title'=>'URLs (comma separated, * to apply to all)', 'path'=>'ip_filter_restricted_url_list', 'type' => 'text', 'default'=>'*', 'attribs' => 'size="80"');
+
+$configAttributes['google'][]       = array('title'=>'GA Web Property Id', 'path'=>'google_analytics_id', 'type' => 'text');
+$configAttributes['google'][]       = array('title'=>'Google Website Optimizer Id', 'path'=>'gwo_id', 'type' => 'text');
+
+?>
+
+<div id="eav_edit_wrap" class="eav-edit-wrap">
+    <form name="edit-backend-core-settings" id="edit-admin-user-form" action="<?php echo $this->getUrl('backend/config/submit') ?>" method="post" onsubmit="return validate('edit-backend-core-settings');">
+    
+	<input type="hidden" name="scope" value="default" />
+	<input type="hidden" name="scope_id" value="0" />
+		
+    <fieldset>
+        <legend title="Common Settings" onclick="$(this).parent().toggleClass('closed');">Website Settings</legend>
+        <?php foreach($configAttributes['common'] as $attribute): ?>
+        <div class="input-wrap">
+            <?php drawAttributeElement($attribute, $this) ?>
+        </div>
+        <?php endforeach; ?>
+    </fieldset>
+    <fieldset class="closed">
+        <legend title="Locale Settings" onclick="$(this).parent().toggleClass('closed');">Locale Settings</legend>
+        <?php foreach($configAttributes['locale'] as $attribute): ?>
+        <div class="input-wrap">
+            <?php drawAttributeElement($attribute, $this) ?>
+        </div>
+        <?php endforeach; ?>
+    </fieldset>
+    <fieldset class="closed">
+        <legend title="URL Settings" onclick="$(this).parent().toggleClass('closed');">URL Settings</legend>
+        <?php foreach($configAttributes['url'] as $attribute): ?>
+        <div class="input-wrap">
+            <?php drawAttributeElement($attribute, $this) ?>
+        </div>
+        <?php endforeach; ?>
+    </fieldset>
+    <fieldset class="closed">
+        <legend title="Email Settings" onclick="$(this).parent().toggleClass('closed');">Email Settings</legend>
+        <?php foreach($configAttributes['email'] as $attribute): ?>
+        <div class="input-wrap">
+            <?php drawAttributeElement($attribute, $this) ?>
+        </div>
+        <?php endforeach; ?>
+    </fieldset>
+    
+    <fieldset class="closed">
+        <legend title="Session Config Data" onclick="$(this).parent().toggleClass('closed');">Session Settings</legend>
+        <?php foreach($configAttributes['session'] as $attribute): ?>
+        <div class="input-wrap">
+            <?php drawAttributeElement($attribute, $this) ?>
+        </div>
+        <?php endforeach; ?>
+    </fieldset>
+
+    <fieldset class="closed">
+        <legend title="Google Analytics ettings" onclick="$(this).parent().toggleClass('closed');">Google Analytics Settings</legend>
+        <?php foreach($configAttributes['google'] as $attribute): ?>
+        <div class="input-wrap">
+            <?php drawAttributeElement($attribute, $this) ?>
+        </div>
+        <?php endforeach; ?>
+    </fieldset>
+    
+        <div class="input-wrap">
+                <input value="back" class="submit" type="reset">
+                <input value="Save" class="submit" id="button-save" type="submit">
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    helperForm = new HelperForm();
+    function validate(form) {
+        for(i=0; i<document.forms[form].elements.length; i++)
+        {
+            if(document.forms[form].elements[i].type=="select-multiple") {
+                if (document.forms[form].elements[i].selectedIndex == -1) { // clear the multi-select if no selection is made
+                    document.forms[form].elements[i].selectedIndex=0;
+                    document.forms[form].elements[i].options[0].value = '';
+                }
+            } 
+        }
+        return helperForm.validate(form);
+    }
+</script>
+
+<?php
+function drawAttributeElement($attribute, $editer)
+{
+    $type = !empty($attribute['type']) ? $attribute['type'] : 'text';
+    $title= !empty($attribute['title']) ? $attribute['title'] : '';
+    $path = $attribute['path'];
+    $name = 'config_data['. $path .']';
+    $origValue = !$editer->getConfigValue($path) ? @$attribute['default'] : $editer->getConfigValue($path);
+    $attribs = !empty($attribute['attribs']) ? $attribute['attribs'] : '';
+    ?>
+        <label><?php echo $title ?></label>
+        <?php if($type == 'text'): ?>
+           <input type="text" class="text" name="<?php echo $name ?>" value="<?php echo $origValue ?>" title="<?php echo $title ?>" <?php echo $attribs ?>>
+
+        <?php elseif($type == 'select' || $type == 'boolean'):
+                $optionValues= $type == 'boolean' ? array('No','Yes') : $editer->$attribute['optionmethod'](); ?>
+                <select name="<?php echo $name ?>" class="select" title="<?php echo $title ?>" <?php echo $attribs ?>>
+                <?php foreach($optionValues as $value=>$option): ?>
+                    <option value="<?php echo $value ?>" <?php if($origValue == $value){ echo 'selected'; } ?> ><?php echo $option ?></option>
+                <?php endforeach; ?>
+                </select>
+                
+        <?php elseif($type == 'multi-select'):
+                $optionValues= $editer->$attribute['optionmethod'](); 
+                $origValueList = explode("," , $origValue);
+                ?>
+                <select name="<?php echo $name . '[]'?>" class="select multiselect" title="<?php echo $title ?>" <?php echo $attribs ?> multiple="multiple">
+                <?php foreach($optionValues as $value=>$option): ?>
+                    <option value="<?php echo $value ?>" <?php if (in_array($value, $origValueList)) { echo 'selected'; } ?> ><?php echo $option ?></option>
+                <?php endforeach; ?>
+                </select>
+
+        <?php elseif($type == 'checkbox'): ?>
+           <input type="checkbox" class="checkbox" name="<?php echo $name ?>" value="1" <?php if(!empty($origValue)) { echo 'checked'; } ?> title="<?php echo $title ?>" <?php echo $attribs ?>>
+
+        <?php endif;
+        if(!empty($attribute['is_global'])): ?><span class="comments-wrap">(GLOBAL)</span><?php endif;
+}
+?>

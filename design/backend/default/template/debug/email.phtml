@@ -1,0 +1,106 @@
+<?php
+/**
+ * Email debug template
+ * 
+ * @package Backend
+ * @subpackage Email
+ * @category Html
+ * @uses Backend_Block_Template
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<?php
+$request = $this->getRequest();
+$email_template = $request->getParam('email_template') ? $request->getParam('email_template') : false;
+$email_params = $request->getParam('email_params') ? $request->getParam('email_params') : false;
+$templates = array();
+$templates[] = '';
+$templates[] = 'order/new_order.phtml';
+$templates[] = 'order/order_confirmed.phtml';
+$templates[] = 'order/order_shipped.phtml';
+$templates[] = 'order/order_cancelled.phtml';
+$templates[] = 'order/order_notify.phtml';
+$templates[] = 'order/order_processing_error.phtml';
+?>
+
+<div class="eav-edit-wrap" id="eav_edit_wrap" style="width:100%; padding-top: 1px;" align="center">
+    <h1>Email Template Debugger</h1>
+    <form id="eav-edit-form" name="email_debug_form" method="post" action="javascript:submitEmailDebugForm();"  onsubmit="return submitEmailDebugForm();">
+        <table align="center" cellspacing="0" cellpadding="0" border="0" width="100%" style="width: 80%; margin: 0;">
+            <tr>
+                <th class="attribute-field">Template </th>
+                <td>
+                    <select class="select" name="email_template" id="input_email_template">
+                        <?php foreach($templates as $template): ?>
+                        <option value="<?php echo $template ?>"><?php echo $template ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <?php /*or type template name
+                    <input type="text" value="<?php echo $email_template ?>" class="text required" name="email_template" id="input_email_template_text" style="width:300px;"">
+                    */ ?>
+                </td>
+                <th>Website</th>
+                <td>
+                    <select class="select" name="website" id="input_website">
+                        <option value="">Default</option>
+                        <?php foreach(App_Main::getModel('core/website')->getWebsites() as $website): ?>
+                        <option value="<?php echo $website->getId() ?>"><?php echo $website->getname() ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </td>
+                    
+                <th><input type="submit" class="submit" value="Check" onclick="return submitEmailDebugForm()"></th>                    
+            </tr>
+        </table>
+    </form>
+    <div id="email-debug-result" style="width:100%; height:500px; background: #FFFFFF; padding: 10px; border: none; margin-top: 20px;"></div>
+</div>
+
+
+
+<script type="text/javascript">
+function submitEmailDebugForm()
+{
+    var sendData = '';
+        sendData += 'email_template='+ $('#input_email_template').val()
+        sendData += '&website='+ $('#input_website').val()
+        //sendData += '&email_params='+ getElementValue('input_email_params');
+    var resultsTd = document.getElementById('email-debug-result');
+    if(document.getElementById('email-debug-result-iframe')) {
+        var elm = document.getElementById('email-debug-result-iframe');
+        elm.parentNode.removeChild(elm);
+    }
+    drawChildElement(resultsTd, {tag: 'iframe', id: 'email-debug-result-iframe', src:'<?php echo $this->getUrl('backend/debug/email_submit') ?>?'+sendData, width: '100%', height: 600, frameborder: 0, scrolling: 'auto'});
+
+    return false;
+}
+
+function drawElement(elmInfo)
+{
+    if(!elmInfo.tag) return false;
+    var elm = document.createElement(elmInfo.tag);
+
+    for(var field in elmInfo) {
+        if(field == 'tag') continue;
+        if(field == 'data') {
+            elm.innerHTML = elmInfo[field];
+            continue;
+        }
+        if(field == 'css_class') {
+            elm.setAttribute('class',elmInfo[field]);
+            continue;
+        }
+        //Assign the attribute and values
+        elm.setAttribute(field,elmInfo[field]);
+    }
+    return elm;
+}
+
+function drawChildElement(parent, elmInfo)
+{
+    var elm = drawElement(elmInfo);
+    parent.appendChild(elm);
+    return elm;
+}
+</script>

@@ -1,0 +1,88 @@
+<?php
+/**
+ * View project HTML
+ * 
+ * @package Project
+ * @category Html
+ * @uses Core_Block_Template
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<?php
+if($this->getProject() instanceof Project_Model_Project) {
+    $_project = $this->getProject();
+} else {
+    $_project = App_Main::getModel('core/object');
+}
+$_title = $_project->getTitle();
+?>
+<section id="io">
+	<form action="">
+    	<div class="form_row">
+        	<label for="pname">Project</label> <input id="pname" name="pname" class="text slct" value="<?php echo $_title ?>" />
+        </div>
+        <div class="form_row">
+        	<label>Key</label>
+            <ul class="key">
+            	<li><span class="mktng"></span> Marketing</li>
+                <li><span class="dvlp"></span> Development</li>
+                <li><img src="<?php echo $this->getSkinUrl('img/ms.gif') ?>" width="10" height="10" alt="Milestone" /> Milestone</li>
+                <li><img src="<?php echo $this->getSkinUrl('img/complete.gif') ?>" width="25" height="10" alt="Complete" /> Complete</li>
+                <li><img src="<?php echo $this->getSkinUrl('img/started.gif') ?>" width="25" height="10" alt="started" /> Started</li>
+                <li><img src="<?php echo $this->getSkinUrl('img/notstarted.gif') ?>" width="25" height="10" alt="Not Started" /> Not started</li>
+            </ul>
+        </div>
+    </form>
+</section>
+
+<section id="tw">
+
+	<header id="prjct">
+    	<hgroup><h1><?php echo $_title ?></h1></hgroup>
+    </header>
+
+    <a href="#" style="float:right; font-weight: bold; font-size: 12px; color: #FAFAFA;" id="bc_link" target="_blank">View on Basecamp</a>
+
+	<section id="timeline">
+        <header>
+            <hgroup>
+                <h1>Start</h1>
+                <input type="hidden" id="tl_start" name="tl_start"/>
+                <h2>06/04/2011</h2>
+            </hgroup>
+        </header>
+
+        <div class="scrollable">
+            <div class="items" id="week_items"></div>
+        </div>
+        
+        <div class="mavatars"></div>
+        <div class="davatars"></div>
+        <div class="mtrouble"></div>
+        <div class="dtrouble"></div>
+
+    	<footer>
+            <hgroup>
+                <h1>End</h1>
+                <input type="hidden" id="tl_end" name="tl_end"/>
+                <h2>06/05/2011</h2>
+            </hgroup>
+        </footer>
+
+    </section> <!-- end of timeline -->
+</section>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    //initialize the Js object
+    window.projectTL = new ProjectTimeline();
+    projectTL.init();
+    projectTL._canEdit = false;
+	<?php if($_project && $_project->getId()): ?>
+    //load the project from server
+    projectTL.loadProject({bc_id:'<?php echo $_project->getBcId() ?>'});
+	<?php endif; ?>
+
+});
+</script>

@@ -1,0 +1,31 @@
+<?php
+/**
+ * Html Outline for  single columm page view
+ * 
+ * @package Backend
+ * @subpackage Page
+ * @category Html
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $this->getLang() ?>" lang="<?php echo $this->getLang() ?>" xmlns:fb="http://www.facebook.com/2008/fbml">
+<?php echo $this->getChildHtml('head') ?>
+<body class="<?php echo $this->getBodyClass() ?>">
+<div id="thewrapper">
+    <?php echo $this->getChildHtml('header') ?>
+    <!-- [end] header -->
+    <div id="main" class="wrapper_940">
+        <?php echo $this->getChildHtml('header_bottom') ?>
+        <?php echo $this->getChildHtml('content') ?>
+    </div>
+    <!-- [end] content -->
+    <div class="footer" id="footer">
+    <?php echo $this->getChildHtml('footer') ?>
+    </div><!-- end of footer -->
+</div>
+<?php echo $this->getChildHtml('before_body_end') ?>
+<?php echo $this->getAbsoluteFooter() ?>
+</body>
+</html>

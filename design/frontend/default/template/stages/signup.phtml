@@ -1,0 +1,79 @@
+<?php
+/**
+ * User Login HTML
+ * 
+ * @package Stages
+ * @category Html
+ * @uses Core_Block_Template
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<section id="signup" class="signup" style="display: none;">
+    <header class="mh"><h1>Connect to your Basecamp Account</h1>
+    <a href="#" onclick="$('#lfw').show(); $('#signup').hide();" class="login_link">Login</a>
+    </header>
+    <section class="bc_connect_token">
+        <div class="form_row">
+            <label for="bc_host">BC Host</label>
+            <input type="text" class="text" id="bc_host" name="bc_host" title="Basecamp Host" style="width:384px;"/>
+        </div>
+        <div class="form_row">
+            <label for="bc_token">BC Token</label>
+            <input type="text" class="text" id="bc_token" name="bc_token" title="Basecamp Token" style="width:300px;"/>
+            <input type="button" class="submit" value="Connect" onclick="connectToBc()" style="margin-left:10px;">
+        </div>
+    </section>
+    <section class="signup_form">
+        <form id="signup_form" style="display: none;" method="post" action="<?php echo $this->getUrl('stages/user/signup_submit') ?>"  onsubmit="return submitLogin()" autocomplete="on">
+            <?php if($message = $this->getMessage()): ?><p style="display: block;" class="error"><?php echo $message ?></p><?php endif; ?>
+            <input type="hidden" value="" name="bc_token" id="bc_token_signup">
+            <div class="form_row form_username">
+                <label for="user_name">Username:</label>
+                <input type="text" class="text" id="user_name" readonly name="username" />
+            </div>
+            <div class="form_row form_pwd">
+                <label for="login_pass">Password:</label>
+                <input type="password" class="text" id="user_pass" name="password" />
+            </div>
+            <div class="form_row form_submit">
+                <input type="submit" class="submit" name="submit" value="Signup" />
+            </div>
+        </form>
+    </section>
+</section>
+
+<script type="text/javascript">
+function connectToBc()
+{
+    var _host = $.trim($('#bc_host').val());
+    if(!_host || _host == '' || _host.indexOf('http', 0) < 0) { alert('Please enter a valid BC host in the format https://yourcompany.basecamphq.com'); return false; }
+
+    var _token = $.trim($('#bc_token').val());
+    if(!_token || _token == '') { alert('Please enter a valid BC tocken'); return false; }
+    
+    $('.bc_connect_token').append('<p id="connect_bc_loader">Connecting to Basecamp...</p>');
+    $('.bc_connect_token .form_row').hide();
+    $.ajax({type: 'POST', url: stages.getUrl('stages/basecamp/connect'), data: {token:_token,host:_host}, success: this.afterConnectToBc, dataType: 'json'});;
+    return true;
+}
+
+function afterConnectToBc(response)
+{
+    if(response && response.redirect) {
+        return window.location.replace(response.redirect);
+    }
+    $('#connect_bc_loader').hide();
+    if(!response || response.success == 0 || !response.username) {
+        $('#connect_bc_loader').hide();
+        $('.bc_connect_token .form_row').show();
+        $('#lfw .mh h1').text('Unable to validate your Basecamp token, please try again.');
+        return;
+    }
+    $('#signup_form').show();
+    $('#user_name').val(response.username);
+    $('#lfw .mh h1').text('Hi '+ response.firstname +' '+ response.lastname +', enter a password for your Stages account');
+    $('#bc_token_signup').val(response.token);
+    return true;
+}
+</script>

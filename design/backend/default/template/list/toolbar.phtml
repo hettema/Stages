@@ -1,0 +1,47 @@
+<?php
+/**
+ * Toolbar block template
+ * 
+ * @package Backend
+ * @subpackage List
+ * @category Html
+ * @uses Backend_Block_List_Toolbar
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<?php
+$count =  $this->getTotalCount();
+$limit = $this->getLimit();
+$pageCount = $count ? ceil($count/$limit) : 0;
+$currentPage = $this->getCurrentPage();
+
+$pagesToShow = 5;
+$startPage = 1;
+if($currentPage > 3) {
+    $startPage = ($pageCount - ($currentPage - 2) < $pagesToShow) ? ($pageCount - $pagesToShow) + 1 : $currentPage - 2 ;
+}
+
+$_countInfo = "Found <strong>". $count ."</strong> ";
+$_countInfo .= $count == 1 ? 'result' : 'results';
+?>
+<div class="results_info">
+    <div class="title"><?php echo $_countInfo ?></div>
+    <?php if($count > $limit): ?>
+    <ul class="pagination">
+        <?php if($currentPage > 1 && $pagesToShow < $pageCount) : ?>
+        <li class="prev"><a href="<?php echo $this->getPageUrl($currentPage - 1) ?>" ><</a></li>
+        <?php endif; ?>
+        <?php for ($idx = $startPage,$num = 0; $idx <= $pageCount && $num < $pagesToShow; $idx++,$num++): ?>
+            <li><a  class="<?php if($currentPage==$idx) { echo 'current'; } ?>" href="<?php echo $this->getPageUrl($idx) ?>" >
+                <?php echo $idx; ?>
+                </a></li>
+        <?php endfor; ?>
+
+        <?php if($currentPage < $pageCount && $pagesToShow < $pageCount) : ?>
+        <li class="next"><a href="<?php echo $this->getPageUrl($currentPage + $pagesToShow + 1) ?>" >></a></li>
+        <?php endif; ?>
+        <?php /*<li class="all"><a href="#">All pages&hellip;</a></li>*/ ?>
+    </ul>
+    <?php endif; ?>
+</div> <!-- end of results info and pagination -->

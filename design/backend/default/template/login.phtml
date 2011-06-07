@@ -1,0 +1,46 @@
+<?php
+/**
+ * Admin user logn page
+ * 
+ * @package Admin
+ * @subpackage User
+ * @category Html
+ * @uses Backend_Block_Template
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<head>
+    <title>Admin Backend</title>
+    <meta http-equiv="Content-Type" content="<?php echo $this->getContentType() ?>" />
+    <meta name="robots" content="no-follow" />
+
+    <link rel="icon" href="<?php echo $this->getSkinUrl('favicon.ico') ?>" type="image/x-icon" />
+    <link rel="shortcut icon" href="<?php echo $this->getSkinUrl('favicon.ico') ?>" type="image/x-icon" />
+    <link href="<?php echo $this->getSkinUrl('css/style.css'); ?>" rel="stylesheet" type="text/css" />
+
+    <!--[if lt IE 8]><?php echo $this->getSkinUrl('css/browser_specific/ltie8.css'); ?>" rel="stylesheet" type="text/css" /><![endif]-->
+    <!--[if IE 6]><link href="<?php echo $this->getSkinUrl('css/browser_specific/ie6.css'); ?>" rel="stylesheet" type="text/css" /><![endif]-->
+
+    <script type="text/javascript" src="<?php echo $this->getSkinUrl('js/jquery.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $this->getSkinUrl('js/piw.js') ?>"></script>
+</head>
+<body>
+    <form name='loginForm' id="login-form"  method="POST"  action="<?php echo $this->getUrl('admin/index/login') ?>">
+    <div class="login-wrap">
+        <div id="message-zone" class="message-wrap"><?php echo $this->getChildHtml('session_messages') ?></div>
+        <div class="form_row">
+            <img src="<?php echo $this->getSkinUrl('images/user.gif'); ?>" alt="username"/>
+            <input class="text" type="text" id="username" name="login[username]" tabindex="0">
+            <img src="<?php echo $this->getSkinUrl('images/user_pass.gif'); ?>" alt="password"/>
+            <input class="text" type="password" id="password" name="login[password]" value="">
+            
+            <input class="submit" type="submit" value="Login" name="submit-login">
+        </div>
+
+        <!--div class="field-wrap">
+            <a href="javascript:coreMain.xajaxLoad('user_forgot_password')"><span class="user-forgot-pass">Forgot Password</span></a>
+        </div-->
+    </div>
+    </form>
+</body>

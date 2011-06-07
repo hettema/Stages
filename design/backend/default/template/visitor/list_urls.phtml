@@ -1,0 +1,29 @@
+<?php
+/**
+ * Visitor url list
+ * 
+ * @package Visitor
+ * @category Html
+ * @uses Backend_Block_Template
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<ul class="visitor-logs-info-url">
+    <?php
+    $visitorId = $this->getRequest()->getParam('visitorId');
+    $results = App_Main::getSingleton('visitor/visitor')->getCollection()->getVisitorUrls($visitorId);
+    $results = !empty ($results) ? $results : array();
+    $prevDate = $prevReferer = false;
+    foreach($results as $row):
+    $visitDate = date('Y-m-d', $row['visit_time']);
+    ?>
+    <?php if($visitDate != $prevDate && !empty($groupIp)): $prevDate = $visitDate; ?>
+        <div class="url-date"><?php echo $visitDate ?></div>
+    <?php endif; ?>
+    <?php if($prevReferer != $row['http_referer']): $prevReferer = $row['http_referer']; ?>
+        <div class="referer-url">Referer: <a href="<?php echo $row['http_referer'] ?>" target="_blank"><?php echo $row['http_referer'] ?></a></div>
+    <?php endif; ?>
+    <li><span class="url-time">[<?php echo date('h:i:s a', $row['visit_time']) ?>]</span> <a href="<?php echo $row['url'] ?>" target="_blank"><?php echo $row['url'] ?></a></li>
+    <?php endforeach; ?>
+</ul>

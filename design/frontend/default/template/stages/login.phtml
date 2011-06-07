@@ -1,0 +1,79 @@
+<?php
+/**
+ * User Login HTML
+ * 
+ * @package Stages
+ * @subpackage Login
+ * @category Html
+ * @uses Stages_Block_Login
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<section id="lfw">
+    <header class="mh"><h1><?php echo $this->getHeaderMessage() ?></h1>
+    <?php if($this->showSignupForm()):?>
+        <a href="#" onclick="$('#lfw').hide(); $('#signup').show();" class="login_link">Sign Up</a>
+    <?php endif; ?>
+    </header>
+    
+    <section>
+        <form id="login_form" method="post" action="<?php echo $this->getUrl('stages/user/login') ?>"  onsubmit="return submitLogin()" autocomplete="on">
+            <?php if($message = $this->getMessage()): ?><p style="display: block;" class="error"><?php echo $message ?></p><?php endif; ?>
+
+            <div class="form_row">
+                <label for="login_name">Username</label>
+                <input type="text" class="requiredemail text" id="login_name" name="login_name" title="Email "/>
+            </div>
+            <div class="form_row form_pwd">
+                <label for="login_pass">Password</label>
+                <input type="password" class="text" id="login_pass" name="login_pass" />
+                <a class="pwd" href="#">Forgot password?</a>
+            </div>
+            <div class="form_row form_submit">
+                <input type="submit" class="submit" name="submit" value="Login" />
+            </div>
+            <div class="form_row form_submit_pwd">
+                <p>Enter the email address you used to sign up and we'll send you a new password right away</p>
+                <input type="submit" class="submit se" name="submit" value="Email my new password" /> <a href="#" class="cpwd">Cancel</a>
+            </div>
+        </form>
+    </section>
+</section>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#login').click(function(){
+		$(this).hide();
+		$('#lfw').slideDown();
+		$('html,body').animate({scrollTop: $("#lfw").offset().top},'slow');
+		return false;
+	});
+	/*$("#login").fancybox({
+		'scrolling'     : 'no',
+		'titleShow'     : false
+	});*/
+	$('#login_form a.pwd').click(function(){
+		$('#login_form .form_pwd, #login_form .form_submit').hide();
+		$('#login_form p.error').hide();
+		$('#login_form .form_submit_pwd').show();
+		return false;
+	});
+	$('#login_form a.cpwd').click(function(){
+		$('#login_form .form_submit_pwd').hide();
+		$('#login_form p.error').hide();
+		$('#login_form .form_pwd, #login_form .form_submit').show();
+		return false;
+	});
+});
+
+function submitLogin(submit)
+{
+    var validator = new formValidator();
+	$('#login_form p.error').hide();
+    if(!validator.validateEmail($('#login_name').val())) { alert('Please enter a valid email address'); return false; }
+    //if(!$('#login_pass').val() || $('#login_pass').val() == '') { alert('Please enter your password'); return false; }
+    return true;
+}
+</script>
+
+<?php if($this->showSignupForm()) { echo $this->getSignupHtml(); } ?>

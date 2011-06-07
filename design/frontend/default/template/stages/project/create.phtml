@@ -1,0 +1,74 @@
+<?php
+/**
+ * Create project HTML view
+ * 
+ * @package Project
+ * @category Html
+ * @uses Core_Block_Template
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<section id="io">
+	<form id="project_edit_form" action="<?php echo $this->getUrl('project/create/save') ?>" method="post">
+    	<div class="form_row">
+        	<label for="pname">Project Name</label> <input id="pname" name="pname" class="text" />
+        </div>
+        <div class="form_row">
+        	<label for="mlead">Marketing Lead</label> <input id="mlead" name="mlead" class="text slct" />
+        </div>
+        <div class="form_row">
+        	<label for="dlead">Development Lead</label> <input id="dlead" name="dlead" class="text slct" />
+        </div>
+        <div class="form_row">
+        	<label>Key</label>
+            <ul class="key">
+            	<li><span class="mktng"></span> Marketing</li>
+                <li><span class="dvlp"></span> Development</li>
+                <li><img src="<?php echo $this->getSkinUrl('img/ms.gif') ?>" width="10" height="10" alt="Milestone" /> Milestone</li>
+            </ul>
+        </div>
+    </form>
+</section>
+
+<section id="tw">
+
+	<section id="timeline">
+        <header>
+            <hgroup>
+                <h1>Start</h1>
+                <input type="hidden" id="tl_start" name="tl_start"/>
+                <h2>06/04/2011</h2>
+            </hgroup>
+        </header>
+        
+        <div class="scrollable">
+            <div class="items" id="week_items"></div>
+        </div>
+
+        <div class="mavatars"></div>
+        <div class="davatars"></div>
+
+        <a href="javascript:void(0)" class="add_week" onclick="projectTL.addWeek()">Add week</a>
+    	<footer>
+            <hgroup>
+                <h1>End</h1>
+                <input type="hidden" id="tl_end" name="tl_end"/>
+                <h2>06/05/2011</h2>
+            </hgroup>
+        </footer>
+
+    </section> <!-- end of timeline -->
+
+    <p class="btn btn_create"><a href="javascript:void(0)" onclick="projectTL.saveProject();"><span class="bc"></span>Create This project on basecamp</a></p>
+
+</section>
+<script type="text/javascript">
+$(document).ready(function() {
+    //initialize the Js object
+    window.projectTL = new ProjectTimeline();
+    projectTL.init();
+    //set the start date as today date for the empty project timeline
+    projectTL.setStartDate('<?php echo date('Y/d/m') ?>', true);
+});
+</script>

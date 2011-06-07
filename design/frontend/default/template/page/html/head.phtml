@@ -1,0 +1,39 @@
+<?php
+/**
+ * Page Head HTML
+ * 
+ * @package Page
+ * @subpackage Head
+ * @category Html
+ * @user Page_Block_Html_Head
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<head>
+    <title><?php echo $this->getTitle() ?></title>
+    <meta http-equiv="Content-Type" content="<?php echo $this->getContentType() ?>" />
+    <meta name="description" content="<?php echo htmlspecialchars($this->getDescription()) ?>" />
+    <meta name="keywords" content="<?php echo htmlspecialchars($this->getKeywords()) ?>" />
+    <meta name="robots" content="<?php echo htmlspecialchars($this->getRobots()) ?>" />
+
+    <?php /*<link rel="icon" href="<?php echo $this->getSkinUrl('favicon.ico') ?>" type="image/x-icon" />
+    <link rel="shortcut icon" href="<?php echo $this->getSkinUrl('favicon.ico') ?>" type="image/x-icon" /> */ ?>
+    <link href="<?php echo $this->getSkinUrl('css/style.css'); ?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->getSkinUrl('css/style_extra.css'); ?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->getSkinUrl('js/ui/css/stages/jquery-ui-1.8.11.custom.css') ?>" rel="stylesheet" type="text/css" />
+    <script src="<?php echo $this->getSkinUrl('js/jquery.js') ?>"></script>
+    <script src="<?php echo $this->getSkinUrl('js/ui/js/jquery-ui-1.8.11.custom.min.js') ?>"></script>
+    <script src="<?php echo $this->getSkinUrl('js/qtip/jquery.qtip-1.0.0-rc3.min.js') ?>"></script>
+    <script src="<?php echo $this->getSkinUrl('js/jquerytools.js') ?>"></script>
+    <script src="<?php echo $this->getSkinUrl('js/stages.js') ?>"></script>
+    <script src="<?php echo $this->getSkinUrl('js/stages_main.js') ?>"></script>
+    <script src="<?php echo $this->getSkinUrl('js/project.js') ?>"></script>
+    <!--[if lt IE 9]>
+    	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    	<link href="<?php echo $this->getSkinUrl('css/browser_specific/ie.css') ?>" rel="stylesheet" type="text/css" />
+    <![endif]-->
+        <script type="text/javascript">
+            var stages = new Stages();
+        </script>
+</head>

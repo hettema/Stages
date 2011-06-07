@@ -1,0 +1,16 @@
+<?php
+/**
+ * Page Header
+ * 
+ * @package Page
+ * @subpackage Header
+ * @category Html
+ * @uses Page_Block_Html_Header
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<header id="logo">
+	<h1><a href="<?php echo $this->getUrl('') ?>" title="Stages homepage">Stages | Basecamp productivity</a></h1>
+</header>
+<div id="message-zone" class="message-wrap"><?php echo $this->getChildHtml('session_messages') ?></div>

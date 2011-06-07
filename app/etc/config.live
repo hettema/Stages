@@ -1,0 +1,12 @@
+<?php
+$connectDb['host'] = 'buzrr-rds.cz641k4ttslg.us-east-1.rds.amazonaws.com';
+$connectDb['port'] = 3306;
+$connectDb['user'] = 'stages_user';
+$connectDb['pass'] = 'pass4stages';
+$connectDb['datb'] = 'stages';
+$connectDb['charSet'] = 'utf8';
+
+define('SERVER_URI', 'http://' . $_SERVER["HTTP_HOST"].'/');
+define('SECURE_SERVER_URI', 'https://' . $_SERVER["HTTP_HOST"].'/');
+define('APP_VERSION', '@APP_VERSION@');
+?>

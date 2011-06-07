@@ -1,0 +1,29 @@
+<?php
+/**
+ * View admin user profile
+ * 
+ * @package Admin
+ * @subpackage User
+ * @category Html
+ * @uses Backend_Block_Template
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<?php
+$_helper = $this->helper('catalog');
+$_entity = $this->getUser();
+$eavAttributes = $_entity->getEavAttributes();
+?>
+<table cellpadding="0" cellspacing="0" border="0">
+    <?php foreach($eavAttributes as $attribute) :
+    if($attribute['is_visible'] != 1) continue;
+    $attributeCode = $attribute['attribute_code'];
+    if(!$_entity->getData($attributeCode)) continue;
+    ?>
+    <tr>
+        <th><?php echo $attribute['attribute_code'] ?></th>
+        <td><?php echo $_entity->getData($attributeCode) ?></td>
+    </tr>
+    <?php endforeach; ?>
+</table>

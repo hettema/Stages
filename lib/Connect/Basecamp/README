@@ -1,0 +1,182 @@
+NAME:
+
+    Basecamp PHP API - A PHP class for access to the Basecamp REST API.
+
+AUTHOR:
+
+    Monte Ohrt (monte [at] ohrt [dot] com)
+
+LATEST VERSION:
+
+    1.1.1 - Aug 13, 2009
+
+REQUIREMENTS:
+    
+    PHP 5+
+    curl PHP extension
+    SimpleXML PHP extension (if simplexml is used as output)
+
+SYNOPSIS:
+
+    // typical REST request
+    require('Basecamp.class.php');
+    $bc = new Basecamp('http://mysite.basecamphq.com/','myname','mypass');
+    $response = $bc->getProjects();
+    // see the XML output
+    print_r($response['body']);
+
+    // same request, but output is SimpleXML for easy PHP iteration
+    require('Basecamp.class.php');
+    $bc = new Basecamp('http://mysite.basecamphq.com/','myname','mypass','simplexml');
+    $response = $bc->getProjects();
+    // iterate the projects
+    foreach($response['body']->project as $project)
+      print_r($project);
+
+    // upload a file and attach to a new message
+    $file_id = $bc->uploadFile('./myfile.zip');
+
+    $response = $bc->createMessageForProject(
+      1234567,
+      'test title',
+      'test body',
+      null,
+      null,
+      0,
+      false,
+      array(),
+      array(array('My Zip File',$file_id,'application/zip','myfile.zip'))
+    );
+
+    // copy milestones and to-do's between projects
+    $bc->copyProject($from_project_id,$to_project_id);
+
+DESCRIPTION:
+
+    Basecamp is a web service project manager found at http://www.basecamphq.com/.
+    Basecamp provides a REST API for developer access. Basecamp PHP API is a PHP
+    library that encapsulates all of the Basecamp API features into a simple to
+    use PHP class.
+
+    At this point there is not extensive documentation, as the code documents itself
+    very nicely :) You can choose the output of XML or SimpleXML, as seen in the
+    example above.
+
+    Each API method returns an array of values:
+
+    $response['body'] => the body of the response (xml or simplexml object)
+    $response['headers'] => the headers of the response
+    $response['status'] => the status of the response
+    $response['location'] => the location URL (if any)
+    $response['id'] => the new record id (if any)
+
+    The copyProject() method currently copies milestones and todo lists/items
+    from one project to another. Both projects must exist in Basecamp, you cannot
+    create projects through the API. All responsible parties and dates are
+    preserved.
+   
+
+FUNCTION LIST:
+
+    __construct ($baseurl,$username=null,$password=null,$format='xml')
+    getProjects()
+    getProject($project_id)
+    getMe($format=null)
+    getMyId()
+    getPeople()
+    getPeopleForProject($project_id,$format=null)
+    getPeopleIdsForProject($project_id)
+    getPeopleForCompany($company_id,$format=null)
+    getPeopleIdsForCompany($company_id)
+    getPerson($person_id)
+    getCompanies()
+    getCompaniesForProject($project_id,$format=null)
+    getCompanyIdsForProject($project_id)
+    getCompany($company_id)
+    getCategoriesForProject($project_id,$type='post',$format=null)
+    getCategoryIdsForProject($project_id,$type='post')
+    getCategory($category_id)
+    createCategoryForProject($project_id,$category_name,$type='post')
+    updateCategoryName($category_id,$category_name)
+    deleteCategory($category_id)
+    getMessagesForProject($project_id)
+    getMessage($message_id)
+    getMessagesForProjectForCategory($project_id,$category_id)
+    getArchivedMessageSummaryForProject($project_id)
+    getArchivedMessageSummaryForProjectForCategory($project_id,$category_id)
+    newMessageTemplateForProject($project_id)
+    createMessageForProject($project_id, $title, $body=null, $category_id=null, $extended_body=null, $milestone_id=0, $private=false, $notify_people=array(), $attachments=array())
+    uploadFile($filepath)
+    editMessage($message_id)
+    updateMessage($message_id, $title, $body=null, $category_id=null, $extended_body=null, $milestone_id=0, $private=false, $notify_people=array(), $attachments=array())
+    deleteMessage($message_id)
+    getRecentCommentsForResource($resource_type,$resource_id)
+    getRecentCommentsForMessage($message_id)
+    getRecentCommentsForMilestone($milestone_id)
+    getRecentCommentsForTodoItem($todo_id)
+    getComment($comment_id)
+    newCommentTemplateForResource($resource_type,$resource_id)
+    newCommentTemplateForMessage($message_id)
+    newCommentTemplateForMilestone($milestone_id)
+    newCommentTemplateForTodoItem($todo_id)
+    createCommentForResource($resource_type, $resource_id, $body)
+    createCommentForMessage($message_id, $body)
+    createCommentForMilestone($message_id, $body)
+    createCommentForTodoItem($message_id, $body)
+    editComment($comment_id)
+    updateComment($comment_id, $body)
+    deleteComment($comment_id)
+    getTodoListsForResource($resource_type,$resource_id=null)
+    getTodoListsForUnassigned()
+    getTodoListsForPerson($person_id)
+    getTodoListsForCompany($company_id)
+    getTodoListsForProject($project_id,$filter_type='all',$format=null)
+    getTodoListIdsForProject($project_id,$filter_type='all')
+    getTodoList($todo_list_id)
+    editTodoList($todo_list_id)
+    updateTodoList($todo_list_id, $name, $description=null, $milestone_id=null, $private=null, $tracked=null)
+    newTodoListTemplateForProject($project_id)
+    createTodoListForProject($project_id, $name, $description=null, $milestone_id=null, $private=null, $tracked=null)
+    deleteTodoList($todo_list_id)
+    reorderTodoListsForProject($project_id,$list_ids)
+    getTodoItemsForList($todo_list_id,$format=null)
+    getTodoItemIdsForList($todo_list_id)
+    getTodoItem($item_id)
+    completeTodoItem($item_id)
+    uncompleteTodoItem($item_id)
+    newTodoItemTemplateForList($todo_list_id)
+    createTodoItemForList($todo_list_id, $content, $responsible_party_type=null, $responsible_party_id=null, $notify=null)
+    updateTodoItem($todo_id, $content, $responsible_party_type=null, $responsible_party_id=null, $notify=null)
+    editTodoItem($todo_id)
+    deleteTodoItem($todo_id)
+    reorderTodoItemsForList($todo_list_id,$todo_ids=array())
+    getMilestonesForProject($project_id,$filter_type='all')
+    completeMilestone($milestone_id)
+    uncompleteMilestone($milestone_id)
+    createMilestoneForProject($project_id, $title, $deadline, $responsible_party_type=null, $responsible_party_id=null, $notify=null)
+    updateMilestone($milestone_id, $title, $deadline, $responsible_party_type=null, $responsible_party_id=null, $notify=null)
+    deleteMilestone($milestone_id)
+    getTimeEntriesForProject($project_id,$page=0)
+    getTimeEntriesForTodoItem($todo_id,$page=0)
+    createTimeEntryForProject($project_id, $person_id, $date, $hours, $description=null)
+    createTimeEntryForTodoItem($todo_id, $person_id, $date, $hours, $description=null)
+    getTimeEntry($entry_id)
+    editTimeEntry($entry_id)
+    updateTimeEntry($entry_id, $person_id, $date, $hours, $description=null)
+    deleteTimeEntry($entry_id)
+    getTimeEntryReport($from=null, $to=null, $subject_id=null, $to_item_id=null, $filter_project_id=null, $filter_company_id=null)
+    getUsername()
+    setUsername($username)
+    getFormat()
+    setFormat($format)
+    getPassword()
+    setPassword($password)
+    getBaseurl()
+    setBaseurl($url)
+
+OTHER PROJECTS:
+
+View my other projects at http://www.phpinsider.com/.
+
+Happy coding.
+Monte

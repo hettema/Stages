@@ -1,0 +1,58 @@
+<?php
+/**
+ * Admin user edit page
+ * 
+ * @package Admin
+ * @subpackage User
+ * @category Html
+ * @uses Backend_Block_Template
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<?php
+$user = $this->getUser();
+
+?>
+<div class="head">
+    <h1>Add/Edit Account details</h1>
+    <hr style="height: 10px; background: #EEEEEE;"/>
+</div>
+<div id="eav_edit_wrap" class="eav-edit-wrap">
+    <form id="form-edit-user" name="form-edit-user" method="post" action="<?php echo $this->getUrl('admin/index/submit_user_profile'); ?>">
+        <?php if($user->getId()): ?>
+        <input type="hidden" name="user_id" value="<?php echo $user->getId() ?>" />
+        <?php endif; ?>
+    <fieldset>
+        <legend title="First Name">Personal Details</legend>
+        <div class="input-wrap">
+            <label for="firstname">First Name</label>
+            <input type="text" id="firstname" name="firstname" class="text" value="<?php echo $user->getFirstname() ?>"/>
+        </div>
+        <div class="input-wrap">
+            <label for="lastname">Last Name</label>
+            <input type="text" id="lastname" name="lastname" class="text" value="<?php echo $user->getLastname() ?>"/>
+        </div>
+        <div class="input-wrap">
+            <label for="email">Email</label>
+            <input type="text" id="email" name="email" class="text" value="<?php echo $user->getEmail() ?>"/>
+        </div>
+
+        <div class="input-wrap">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" readonly disabled class="text" value="<?php echo $user->getUsername() ?>"/>
+        </div>
+
+        <div class="input-wrap">
+            <label for="new_password">Password</label>
+            <input type="password" id="new_password" name="new_password" class="text" value="new_password"/>
+            <label for="change_password"><input type="checkbox" id="change_password" name="change_password" value="1"/> change password</label>
+        </div>
+
+        <div class="input-wrap">
+            <input type="submit" name="submit-user" class="button"  value="Submit" />
+            <input type="button" name="cancel-edit" class="button"  value="Cancel" onclick="window.location='<?php echo $this->getUrl() ?>backend'" />
+        </div>
+    </fieldset>
+    </form>
+</div>

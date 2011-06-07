@@ -1,0 +1,62 @@
+<?php
+/**
+ * Admin user edit page
+ * 
+ * @package Admin
+ * @subpackage User
+ * @category Html
+ * @uses Backend_Block_Template
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<?php
+$_request = $this->getRequest();
+$user = App_Main::getSingleton('admin/user');
+if($_request->getParam('id')) {
+    $user->load($_request->getParam('id'));
+}
+?>
+<div id="eav_edit_wrap" class="eav-edit-wrap">
+    <form name="edit-admin-user-form" id="edit-admin-user-form" action="<?php echo $this->getUrl('admin/user/submit') ?>" method="post" onsubmit="return helperForm.submit('edit-admin-user-form');">
+        <input type="hidden" name="user_id" value="<?php echo $user->getId() ?>">
+        <input type="hidden" name="user_role" value="1">
+        
+        <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th class="attribute-field">First name</th>
+                    <td><input id="input_firstname" name="firstname" class="text required" value="<?php echo $user->getFirstname() ?>" type="text" title="First name"></td>
+                </tr>
+                <tr>
+                    <th class="attribute-field">Last name</th>
+                    <td><input id="input_lastname" name="lastname" class="text" value="<?php echo $user->getLastname() ?>" type="text" title="Last name"></td>
+                </tr>
+                <tr>
+                    <th class="attribute-field">Username</th>
+                    <td><input id="input_username" name="username" class="text required" value="<?php echo $user->getUsername() ?>" type="text" title="username"></td>
+                </tr>
+                <tr>
+                    <th class="attribute-field">Password</th>
+                    <td>
+                        <?php if($user->getPassword()): ?>
+                        <input id="input_password" name="password" class="text" value="" type="text" title="Password" style="width:64%">
+                        <input id="input_password_check" name="change_password" value="1" type="checkbox" title="Change Password"><label>Change Password</label>
+                        <?php else: ?>
+                        <input id="input_password" name="password" class="text required" value="" type="text" title="Password">
+                        <?php endif; ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="attribute-field">Email</th>
+                    <td><input id="input_email" name="email" class="text required" value="<?php echo $user->getEmail() ?>" type="text" title="Email"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input value="reset" class="submit" type="reset">
+                        <input onclick="return helperForm.submit('edit-admin-user-form')" value="Save" class="submit" id="button-save" type="submit">
+                    </td>
+                </tr>
+        </table>
+    </form>
+</div>
+<script type="text/javascript">helperForm = new HelperForm();</script>

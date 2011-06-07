@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <crontab>
+        <jobs>
+            <!--newsletter_email_robot>
+                <schedule>
+                    <cron_expr>*/15 9-12,14-17 * Nov-Dec,Jan-Feb Mon-Fri -8</cron_expr>
+                </schedule>
+                <run>
+                    <module>newsletter/newsletter</module>
+                    <action>init</action>
+                    <params>
+                        <param></param>
+                    </params>
+                </run>
+            </newsletter_email_robot-->
+
+
+            <cron_job_name>
+                <schedule>
+                    <cron_expr>*/15 * * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <module>module/module_pointer</module>
+                    <action>action</action>
+                </run>
+            </cron_job_name>
+        </jobs>
+    </crontab>
+</config>

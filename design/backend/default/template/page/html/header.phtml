@@ -1,0 +1,14 @@
+<?php
+/**
+ * Page Header HTML
+ * 
+ * @package Backend
+ * @subpackage Header
+ * @category Html
+ * @uses Backend_Block_Page_Header
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<div style="float: right; "><a href="<?php echo $this->getUrl('admin/index/logout') ?>" title="Logout">Logout</a></div>
+<div id="message-zone" class="message-wrap"><?php echo $this->getChildHtml('session_messages') ?></div>
