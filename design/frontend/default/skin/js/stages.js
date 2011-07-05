@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-$('dl.ms dt a[title]').qtip({
+/*$('dl.ms dt a[title]').qtip({
 	content: {
 		text: false // Use each elements title attribute
 	},
@@ -25,7 +25,7 @@ $('dl.ms dt a[title]').qtip({
 			x:-10
 		}
 	}
-});
+});*/
 
 /*$('.mrkt dt').qtip({
 	content: {
@@ -92,6 +92,17 @@ $('.dev dt').qtip({
 
 $('#qdate').datepicker();
 	
+$(".scrollable").scrollable();
+
+// for the homepage
+$('#features .scrollable').scrollable({ 
+		size:1,
+		autoplay:true,
+		loop:true,
+		speed:1000,
+		vertical:true,
+		clickable:true,
+		keyboard:true
+	}).navigator("#footer ul").circular().autoscroll({interval:10000});*/
     
-$(".scrollable").scrollable();*/
 });

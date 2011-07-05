@@ -58,7 +58,7 @@ class Project_Controller_IndexController extends Core_Controller_Action
 
         $projectId = $this->getRequestParam('id');
         $project = $this->_getSession()->getUser()->getProjectById($projectId, 'bc_id');
-        $this->getLayout()->getBlock('root')->addBodyClass('projects logged-in');
+        $this->getLayout()->getBlock('root')->addBodyClass('view-project logged-in');
         $contentMain = $this->getLayout()->createBlock('core/template', 'content-main', array('template'=>'stages/project/view.phtml', 'project'=>$project));
         $this->getLayout()->getBlock('content')->append($contentMain, 'content-main');
 

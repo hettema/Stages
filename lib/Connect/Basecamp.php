@@ -14,11 +14,6 @@ class Connect_Basecamp extends Basecamp
 {
     public function createProject($name)
     {
-        $tocken = '15ee922302f54f8cf2244f4f433ece7fb4bb46ce';
-        $url = 'https://pbi03a08.basecamphq.com/';
-        $this->setUsername('pbi03a08');
-        $this->setPassword('capiri123');
-        $this->setBaseurl($url);
         /*$body = array(
                   'project'=>array(
                     'name'=>$name

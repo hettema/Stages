@@ -1,0 +1,138 @@
+/* Reset some common tags */
+html, body, div, ul, ol, dl, dd, dt li, h1, h2, h3, h4, h5, p, a, form, blockquote, img, a img, fieldset {
+	margin: 0;
+	padding: 0;
+	outline: none;
+	border: none;
+	text-decoration: none;
+}
+
+html		{ background:#202020 url(../img/bg_html.gif) repeat; min-height:650px; height:100%; }
+body 		{ font:12px/16px "Helvetica Neue", Helvetica, Arial, sans-serif; color:#fff; min-height:650px; height:100%; }
+
+
+/* -- Common tags ----------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+h1									{  }
+h2									{  }
+h3									{  }
+h4 									{  }
+h5									{  }
+p, ul, ol, table, dl, blockquote 	{ margin:16px 0; }
+img									{ display:block; }
+a									{  }
+a:hover								{  }
+a:visited							{  }
+strong								{  }
+em									{  }
+#border								{ position:absolute; top:0; left:0; width:100%; height:8px; }
+.usr								{ z-index:4; position:absolute; top:6px; right:5px; background:#4f4f4f; padding:2px 5px; color:#ddd; text-shadow:1px 1px 1px rgba(0,0,0,0.5);
+									  -moz-border-radius-bottomright:5px; -webkit-border-bottom-right-radius:5px; border-bottom-right-radius:5px;
+				  					  -moz-border-radius-bottomleft:5px; -webkit-border-bottom-left-radius:5px; border-bottom-left-radius:5px;
+									}
+.usr a								{ font-weight:bold; color:#fff; }
+.usr a:hover						{ text-decoration:underline; }
+.qtip-content						{ text-transform:uppercase; font-size:9px; line-height:9px; }
+
+
+/* -- Forms ----------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+div.form_row 	{ width:100%; float:left; display:inline; clear:both; margin-bottom:20px; }
+input, select 	{ outline:none; }
+input.text,
+select			{ height:23px; margin:0; padding:0; border:3px solid #fff; background:url(../img/bg_input.png) 0 0 repeat-x;
+				  -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px;
+				  -webkit-box-shadow:inset 2px 2px 3px rgba(0,0,0,0.2); -moz-box-shadow:inset 2px 2px 3px rgba(0,0,0,0.2); box-shadow:inset 2px 2px 3px rgba(0,0,0,0.2);
+				}
+input.slct		{ background:#eaeaea url(../img/bg_select.png) right 0 no-repeat;
+				}				
+label			{ font-size:14px; line-height:30px; text-transform:uppercase; color:#fff; font-weight:bold; text-shadow:1px 1px 0 #000; }
+
+#qform .col		{ float:left; display:inline; margin:2px 5px 3px 5px; }
+#qform .text	{ display:block; float:left; clear:both; margin-top:2px; border-width:2px; padding:0 5px; }
+#qform label	{ text-align:left; float:left; display:inline; clear:both; font-size:12px; line-height:12px; }
+#qform #qdate	{ width:70px; }
+#qform #qms		{ width:150px; }
+
+
+
+/* -- Header ---------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+#logo			{ width:50%; position:absolute; top:50%; margin:-225px 0 0 -220px; padding:30px 50px 30px 0; background:url(../img/bg_logo.gif) repeat;
+				  -moz-border-radius-topright:10px; -webkit-border-top-right-radius:10px; border-top-right-radius:10px;
+				  -moz-border-radius-bottomright:10px; -webkit-border-bottom-right-radius:10px; border-bottom-right-radius:10px;
+				  -webkit-box-shadow:inset 1px 1px 0 rgba(0,0,0,0.5), 1px 1px 0 #323232; -moz-box-shadow:inset 1px 1px 0 rgba(0,0,0,0.5), 1px 1px 0 #323232;
+				  box-shadow:inset 1px 1px 0 rgba(0,0,0,0.6), 1px 1px 0 #323232; z-index:99;
+				}
+#logo:hover		{ -webkit-box-shadow:inset 1px 1px 0 rgba(0,0,0,0.5), 1px 1px 0 rgba(255,255,255,0.125); -moz-box-shadow:inset 1px 1px 0 rgba(0,0,0,0.5), 1px 1px 0 rgba(255,255,255,0.125);
+				  box-shadow:inset 1px 1px 0 rgba(0,0,0,0.6), 1px 1px 0 rgba(255,255,255,0.125);
+				}				
+#logo a			{ width:165px; height:115px; float:right; display:inline; text-indent:-999999px; background:url(../img/logo.png) 0 0 no-repeat; }
+#logo a:hover	{ background-position:0 -115px; }
+
+#download			{ width:100%; position:absolute; top:50%; background:url(../img/home/bg_download.png) 0 50% repeat-x; margin:-5px 0 0 0; }
+#download a			{ font-weight:bold; color:#ddd; font-size:14px; line-height:14px; text-transform:uppercase; background:url(../img/bg_html.gif); padding:0 20px; margin:0 0 0 -400px;
+					  text-shadow:1px 1px 2px #000; position:relative; top:0; left:50%;
+					}
+#download img		{ display:inline; vertical-align:middle; margin:-5px 5px 0 0; }
+#download a:hover	{ color:#fff; }
+
+
+/* -- Features -------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+#features			{ position:absolute; width:100%; height:100%; }
+.scrollable 		{ position:absolute; top:0; left:0; width:100%; height:100%; overflow:hidden; }
+.scrollable .items 	{ width:100%; height:100%; position:absolute; }
+
+.os, .ov			{ width:100%; height:100%; float:left; display:inline; background:url(../img/home/bg_os.png) 50% 50% no-repeat; }
+
+/* -- Opensource -- */
+.os h2				{ position:absolute; width:460px; top:50%; left:50%; font-size:34px; line-height:42px; text-transform:uppercase; margin:-220px 0 0 -50px; color:#ddd; text-shadow:2px 2px 2px #000; }
+.os .gallery		{ z-index:3; position:absolute; width:460px; height:140px; top:50%; left:50%; margin:55px 0 0 -50px; list-style:none }
+.gallery li			{ float:left; display:inline; width:140px; height:140px; }
+.gallery a			{ float:left; display:inline; width:140px; height:140px; text-indent:-999%; }
+.g1					{ background:url(../img/home/screen1.png) 0 0 no-repeat; }
+.g2					{ background:url(../img/home/screen2.png) 0 0 no-repeat; margin:0 20px; }
+.g3					{ background:url(../img/home/screen3.png) 0 0 no-repeat; }
+.g1:hover,
+.g2:hover,
+.g3:hover			{ background-position:0 -140px; }
+.os .lm				{ position:absolute; top:50%; left:50%; font-size:16px; line-height:16px; font-weight:bold; color:#aaa; margin:205px 0 0 310px; }
+.os .lm:hover		{ color:#fff; cursor:pointer; }
+
+/* -- Overview -- */
+.ov				{ position:relative; background:none; }
+.ov h1			{ position:absolute; width:280px; top:50%; left:50%; font-size:28px; line-height:32px; text-transform:uppercase; margin:30px 0 0 135px; color:#ddd; text-shadow:2px 2px 2px #000; }
+
+#key			{ position:absolute; top:50%; left:50%; margin:-230px 0 0 0; }
+#key ul			{ width:235px; float:left; display:inline; list-style:none; margin:0; }
+#key ul li		{ width:117px; float:left; display:inline; font-size:11px; text-transform:uppercase; color:#ddd; line-height:normal; margin:10px 0 0 0; }
+#key ul span	{ width:25px; height:10px; display:inline-block; }
+#key .mktng		{ background:url(../img/marketing.gif) 0 0 repeat; }
+#key .dvlp		{ background:#ddd; }
+#key img		{ display:inline; }
+#key label		{ width:170px; float:left; display:inline; text-align:right; margin:0 20px 0 0; }
+
+#bars			{ position:absolute; width:460px; height:100%; bottom:0; left:50%; margin:0 0 0 -380px; }
+#bars div		{ width:100px; position:absolute; bottom:0; display:block; }
+#bars .b1		{ height:20%; left:0; background:#acd373; }
+#bars .b2		{ height:30%; left:120px; background:url(../img/timeline/marketing/started.png); }
+#bars .b3		{ height:80%; left:240px; background:#812f00; }
+#bars .b4		{ height:55%; left:360px; background:#812f00; }
+
+
+/* -- Footer ---------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+#footer				{ z-index:5; position:fixed; width:100%; height:72px; left:0; bottom:0; background:url(../img/home/bg_footer.png) 0 0 repeat-x; }
+#footer ul			{ position:relative; width:740px; float:left; display:inline; list-style:none; left:50%; margin:14px 0 0 -370px; }
+#footer li			{ float:left; display:inline; }
+#footer a			{ width:220px; float:left; display:inline; color:#232323; text-shadow:1px 1px 0 rgba(255,255,255,0.3); font-size:10px;
+					  line-height:12px; text-transform:uppercase; padding:5px;
+					}
+#footer strong		{ display:block; font-size:12px; line-height:12px; }
+#footer a:hover		{ border-radius:5px; background:rgba(0,0,0,0.05); }
+#two				{ margin:0 20px; }
+#footer li.active a { -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; background:rgba(0,0,0,0.05); -webkit-box-shadow:inset 1px 1px 3px rgba(0,0,0,0.2), 1px 1px 0 rgba(255,255,255,0.2);
+					  -moz-box-shadow:inset 1px 1px 3px rgba(0,0,0,0.2), 1px 1px 0 rgba(255,255,255,0.2);
+					  box-shadow:inset 1px 1px 3px rgba(0,0,0,0.2), 1px 1px 0 rgba(255,255,255,0.2);
+					}

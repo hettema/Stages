@@ -67,8 +67,9 @@ function ProjectTimeline()
         self.drawProjectTimeline();
     };
     
-    this.pickStartDate = function(dStart, inst) {self.setStartDate(dStart, true);}
-    this.pickEndDate = function(dEnd, inst) {self.setEndDate(dEnd, true);}
+    this.pickStartDate = function(dStart, inst) {self.setStartDate(dStart, true);};
+    
+    this.pickEndDate = function(dEnd, inst) {self.setEndDate(dEnd, true);};
 
     this.setStartDate = function(dStart, redraw)
     {
@@ -107,6 +108,7 @@ function ProjectTimeline()
     this.drawProjectTimeline = function()
     {
         $('#week_items ul').remove();
+        this.hideMilestoneEdit();
         var sApi = $('.scrollable').data("scrollable");
         if(!sApi) {
             $('.scrollable').scrollable({easing: 'swing', speed: 300, circular: false, keyboard: 'static' });
@@ -123,16 +125,10 @@ function ProjectTimeline()
             }
             dCurr.setDate(dCurr.getDate() + 1);
         }
-         this.enableToolTips();
-    };
 
-    this.enableToolTips = function()
-    {
-        $('dl.ms dt a[title], dl.ms[title], span.mday[title]').qtip({content: {text: false},
-                                      style: {name: 'light',background: '#888',padding: 1,textAlign: 'center',color: '#fff',border: {width: 1,radius: 3,color: '#888'}, tip: 'topLeft'},
-                                      show: {delay:0},
-                                      position: {adjust: {x:-10}}
-                                    });
+        this.drawProjectMilestones();
+        
+        this.enableToolTips();
     };
     
     this.addWeek = function()
@@ -146,9 +142,9 @@ function ProjectTimeline()
             
         }
         this.setEndDate(this.getDisplayDate(dStart), false);
-        this.drawWeekColumn(dStart);
+        var weekWrap = this.drawWeekColumn(dStart);
         
-        this.enableToolTips();
+        this.enableToolTips(weekWrap);
         return false;
     };
     
@@ -182,28 +178,59 @@ function ProjectTimeline()
                 api.seekTo(api.getSize() -4, 300);
             }
         
-         $(weekWrap).find('.mrkt dt').bind('click', self.editMilestone);
-         $(weekWrap).find('.dev dt').bind('click', self.editMilestone);
         return weekWrap;
     };
 
     this.drawDateColumn = function(dDate)
     {
         var dShort = this._weekDaysShort[dDate.getDay()];
-        var milestones = this.getMilestonesForDate(dDate);
         var liCl = dDate.getDay() == 0 ? 'we' :
                                 dDate.getDay() == 6 ? 'last we' :
                                 dDate.toDateString() == new Date().toDateString() ? 'today' : '';
         var strHtml = '<li id="'+ this.getDateKey(dDate) +'" class="'+ liCl +'"><span class="mday" title="'+ dDate.toDateString() +'">'+ dShort +'</span>';
-            strHtml += '<div class="mrkt">'+ this.getMilestoneHtml(milestones.m) +'</div>';
-            strHtml += '<div class="dev">'+ this.getMilestoneHtml(milestones.d) +'</div>';
-            strHtml += '<span class="dday">'+ dShort +'</span></li>';
+            strHtml += '<div class="mrkt">'+ this.getMilestoneHtml(false) +'</div>';
+            strHtml += '<div class="dev">'+ this.getMilestoneHtml(false) +'</dev>';
+            strHtml += '<span class="dday" title="'+ dDate.toDateString() +'">'+ dShort +'</span></li>';
         return strHtml;
     };
 
+    this.drawProjectMilestones = function()
+    {
+        for(var k =0; k < this.project.milestones.length; k++) {
+            var milestone = this.project.milestones[k];
+            
+            var divCl = milestone.type == 'd' ? 'dev' : 'mrkt';
+            var liId = this.getDateKey(this.getDateObject(milestone.ms_date));
+            $('#'+ liId).find('div.'+ divCl +' .empty_ms').remove();
+            $('#'+ liId).find('div.'+ divCl).append(self.getMilestoneHtml(milestone));
+        }
+        return true;
+    };
+    
+    this.getMilestoneById = function(bcId, returnIdx)
+    {
+        for(var k =0; k< this.project.milestones.length; k++) {
+            if(bcId && this.project.milestones[k].bc_id != bcId) {continue;}
+            if(returnIdx) {return k;}
+            return this.project.milestones[k];
+        }
+        return false;
+    };
+    
+    this.getMilestoneForDate = function(date, type, returnIdx)
+    {
+        for(var k =0; k< this.project.milestones.length; k++) {
+            if(type && this.project.milestones[k].type != type) {continue;}
+            if(this.project.milestones[k].ms_date != this.getDisplayDate(date)) {continue;}
+            if(returnIdx) {return k;}
+            return this.project.milestones[k];
+        }
+        return false;
+    };
+        
     this.getMilestoneHtml = function(milestone)
     {
-        if(!milestone || !milestone.ms_user) {return '<dl class="ms"><dt></dt><dd></dd></dl>';}
+        if(!milestone || !milestone.bc_id) {return '<div class="empty_ms"><dl class="ms"><dt onclick="projectTL.addNewMilestone(this)"></dt><dd></dd></dl></div>';}
 
         var h = 0;
         var dlCs = 'non';
@@ -225,66 +252,59 @@ function ProjectTimeline()
             statsStr += 'Todo lists - '+ stats.lists +'<br/>Todos total - '+ stats.count +'<br/>Completed - '+ stats.completed +'<br/>Uncompleted - '+ stats.uncompleted +'<br/>Comments - '+ stats.comments +'<br/>Hours - '+ stats.hours;
         }
         
-        return '<span class="ms_t">'+ titleShort +'<img src="'+ stages.getUrl('design/frontend/default/skin/img/timeline/'+ typeStr +'/point.png') +'"></span><img class="avatar" src="'+ stages.getAvatar(milestone.ms_user) +'" width="21" height="21" alt="Dev Milestone assigned to '+ stages.getUserName(milestone.ms_user) +'" /><dl class="ms '+ dlCs +'" title="'+ statsStr +'"><dt><a href="javascript:void(0)" onclick="projectTL.viewMilestoneOnBc('+milestone.bc_id+')" title="'+ milestone.title +' : '+ milestone.ms_date +'">'+ milestone.title +':'+ milestone.ms_date +'</a></dt><dd style="height:'+h+'%;"></dd></dl>';
+        return '<div class="ms_wrap" id="ms_'+ milestone.bc_id +'"><span class="ms_t">'+ titleShort +'<img src="'+ stages.getUrl('design/frontend/default/skin/img/timeline/'+ typeStr +'/point.png') +'"></span><img class="avatar" src="'+ stages.getAvatar(milestone.ms_user) +'" width="21" height="21" alt="Milestone assigned to '+ stages.getUserName(milestone.ms_user) +'" /><dl class="ms '+ dlCs +'" title="'+ statsStr +'"><dt><a href="javascript:void(0)" onclick="projectTL.editMilestone('+milestone.bc_id+')" title="'+ milestone.title +' : '+ milestone.ms_date +'">'+ milestone.title +':'+ milestone.ms_date +'</a></dt><dd style="height:'+h+'%;"></dd></dl></div>';
     };
 
-    this.getMilestone = function(date, type, returnIdx)
+    this.addNewMilestone = function(elm)
     {
-        for(var k =0; k< this.project.milestones.length; k++) {
-            if(type && this.project.milestones[k].type != type) {continue;}
-            if(this.project.milestones[k].ms_date != this.getDisplayDate(date)) {continue;}
-            if(returnIdx) {return k;}
-            return this.project.milestones[k];
-        }
-        return false;
+        var type = $(elm).closest('div.dev, div.mrkt').hasClass('mrkt') ? 'm' : 'd';
+        var date = this.getDisplayDate(this.getDateFromKey($(elm).closest('li').attr('id')));
+            $(elm).closest('li').addClass('ms_editing');
+
+        return this.showMilestoneEdit({ms_date: date, type: type}, elm);
     };
 
-    this.getMilestonesForDate = function(dDate)
+    this.editMilestone = function(bcId)
     {
-        var milestones = new Array();milestones['d'] = false;milestones['m'] = false;
-        for(var k =0; k< this.project.milestones.length; k++) {
-            if(this.project.milestones[k].ms_date != this.getDisplayDate(dDate)) {continue;}
-            milestones[this.project.milestones[k].type] = this.project.milestones[k];
-        }
-        return milestones;
-    };
-
-    this.editMilestone = function(evt)
-    {
-        if(evt && evt.target) {
-            var type = $(evt.target).closest('div').attr('class');
-            var date = self.getDateFromKey($(evt.target).closest('li').attr('id'));
+        if(!self._canEdit) {self.viewMilestoneOnBc(bcId);return false;}
             
-            $(evt.target).closest('li').addClass('ms_editing');
-        }
-        type = (type == 'mrkt') ? 'm' : 'd';
-        return self.showMilestoneEdit(date, type, evt.target);
+        var elm =  $('#ms_'+ bcId).find('dt');
+        return self.showMilestoneEdit(self.getMilestoneById(bcId), elm);
     };
 
-    this.showMilestoneEdit = function (date, type, elm)
+    this.showMilestoneEdit = function (data, elm)
     {
         if(!this._canEdit) {return false;}
-        var data = this.getMilestone(date, type);
 
         this.hideMilestoneEdit(); //$('div.qtip.qtip-light.qtip-active').remove();
         var content = '<form id="qform" action="javascript:projectTL.saveMilestone()">';
-            content += '<input type="hidden" value="'+ this.getDisplayDate(date) +'" name="ms_date_old" id="msdateold" />';
-            content += '<input type="hidden" value="'+ type +'" name="ms_type_old" id="mstypeold" />';
             content += '<div class="col"><label for="msdate">Date</label><input id="msdate" class="text date" style="width:70px;" /></div>';
             content += '<div class="col"><label for="mstitle">Milestone</label><input id="mstitle" class="text slct" style="width:150px;" /></div>';
-            content += '<div class="col"><label for="mstype">Type</label><input id="mstype" class="text slct" style="width:40px;" value="'+ type +'" /></div>';
+            content += '<div class="col"><label for="mstype">Type</label><input id="mstype" class="text slct" style="width:40px;" value="'+ data.type +'" /></div>';
             content += '<input type="submit" value="save" style="position:absolute; left:-100000px;"/>';
+            if(data && data.bc_id) {
+                content += '<input type="hidden" value="'+ data.bc_id +'" name="ms_bc_id" id="msbcid" />';
+                content += '<div class="col"><label>&nbsp</label><input type="button" value="view on BC" class="text" style="height:27px;" onclick="projectTL.viewMilestoneOnBc('+data.bc_id+')"/></div>';
+            } else { // add a tmp id for the milestone
+                content += '<input type="hidden" value="'+ this.getRandomMilestoneBcId() +'" name="ms_bc_id" id="msbcid" />';
+            }
             content += '</form></div>';
 
-        var _qTip_tip = type == 'd' ? 'topLeft' : 'bottomLeft';
-        var _qTip_y = type == 'd' ? 2 : -80;
+        var _qTip_tip = data.type == 'd' ? 'topLeft' : 'bottomLeft';
+        var _qTip_y = data.type == 'd' ? 2 : -80;
         $(elm).qtip({
             content: content,
-            style: {width: 340, name: 'light', background: '#888', padding: 1, textAlign: 'center', color: '#fff', border: {width: 1, radius: 3, color: '#888'},tip: _qTip_tip /*Notice the corner value is identical to the previously mentioned positioning corners */},
+            style: {width: 'auto', name: 'light', background: '#888', padding: 1, textAlign: 'center', color: '#fff', border: {width: 1, radius: 3, color: '#888'},tip: _qTip_tip /*Notice the corner value is identical to the previously mentioned positioning corners */},
             show: {delay:200, ready: true},
-            hide: {when: {event: 'inactive'}},
+            hide: {when: {event: 'escape'}},
             position: {adjust: {y:_qTip_y, x:-10}},
-            api: {onHide: self.hideMilestoneEdit}
+            api: {onHide: self.hideMilestoneEdit,
+                  onRender: function() {
+                                $(window).bind('keydown', function(e) { //hide on escape
+                                    if(e.keyCode === 27) {self.hideMilestoneEdit('escape');}
+                                });
+                          }
+                }
         });
         
         if(data && data.title) {
@@ -292,14 +312,20 @@ function ProjectTimeline()
         }
         $('#mstitle').focus()
         $('#msdate').datepicker();
-        $('#msdate').datepicker('setDate', date);
+        $('#msdate').datepicker('setDate', data.ms_date);
 
         this.makeFieldAutocomplete('mstitle', 'milestone');
         this.makeFieldAutocomplete('mstype', 'milestone_type');
+        return false;
     };
 
-    this.hideMilestoneEdit = function()
+    this.hideMilestoneEdit = function(evtType)
     {
+        if(evtType && evtType == 'escape') { //hide on keypress
+            var elmFocus = $("*:focus").attr("id");
+            if(elmFocus && ['msdate','mstitle','mstype'].indexOf(elmFocus) > -1) {return;}
+        }
+        
         var parent = $('div.qtip.qtip-light').closest('dt');
         if(parent.qtip) {
             parent.qtip('destroy');
@@ -312,51 +338,58 @@ function ProjectTimeline()
         var msTitle = $('#mstitle').val();
         var msDate = $('#msdate').val();
         var msType = $('#mstype').val();
-        var msTypeOld = $('#mstypeold').val();
-        var msDateOld = $('#msdateold').val();
+        var msBcId = $('#msbcid').val();
+        if(!this.project || !this.project.bc_id) {alert("Plase choose a project before adding milestone");}
+        
+        var msExisting = this.getMilestoneById(msBcId);
         var date = this.getDateObject(msDate);
-        var oldDate = this.getDateObject(msDateOld);
-        var msOld = this.getMilestone(oldDate, msTypeOld);
+        var oldDate =  msExisting && msExisting.ms_date ? this.getDateObject(msExisting.ms_date) : date;
 
-        if((!msDate || !msTitle) && msOld && msOld.title) {
-            if(confirm('Do you want to remove the selected milestone dated '+ msDateOld +' ?')) {
-                this.deleteMilestone(msDateOld, msTypeOld);
+        if((!msDate || !msTitle) && msExisting && msExisting.title) {
+            if(confirm('Do you want to remove the selected milestone dated '+ msExisting.date +' ?')) {
+                this.deleteMilestone(msBcId);
                 this.hideMilestoneEdit();
             }
             return;
         } else {
-            var milestone = this.addMilestone(date, msType, msTitle, oldDate, msTypeOld);
-            if(!milestone) {
-                return; 
-            }
+            var milestone = this.addMilestone(msBcId, date, msType, msTitle);
+            if(!milestone) {return;}
 
             $('#'+ this.getDateKey(oldDate)).removeClass('ms_editing');
         }
         this.hideMilestoneEdit();
     };
 
-    this.deleteMilestone = function(date, type)
+    this.getRandomMilestoneBcId = function()
     {
-        var msIdx = this.getMilestone(date,type,true);
+        return 'tmp_'+ Math.floor(Math.random()*11000); //this.project.milestones.length + 1;
+    };
+
+    this.deleteMilestone = function(bcId)
+    {
+        var msIdx = this.getMilestoneById(bcId, true);
         if(msIdx !== false && msIdx >= 0) {
             this.project.milestones.splice(msIdx, 1);
         }
-        var divCl = type == 'd' ? 'dev' : 'mrkt';
-        var liId = self.getDateKey(date);
-        var div = $('#'+ liId).find('div.'+ divCl).html(this.getMilestoneHtml());
-        $('#'+ liId).find('dt').bind('click', self.editMilestone);
+        var parent = $('#ms_'+ bcId).parent();
+        $('#ms_'+ bcId).remove();
+        if($(parent).find('div.ms_wrap').length <= 0) { //add empty milestone erap if no other milestones
+            $(parent).append(this.getMilestoneHtml(false));
+        }
+        
+        this.enableToolTips(parent);
         return false;
     };
 
-    this.addMilestone = function(msDate, msType, msTitle, oldDate, oldType)
+    this.addMilestone = function(msBcId, msDate, msType, msTitle)
     {
-        var msExisting = this.getMilestone(msDate, msType);
-        if(msExisting && !this._allowMultipleMs) { alert('Cannot save milestone!. Another milestone exists on the same date'); return false; }
-        var msObj = this.getMilestone(oldDate, oldType);
+        var msExisting = this.getMilestoneForDate(msDate, msType);
+        if(msExisting && msExisting.bc_id != msBcId && !this._allowMultipleMs) {alert('Cannot save milestone!. Another milestone exists on the same date');return false;}
+        var msObj = this.getMilestoneById(msBcId);
             msObj = !msObj ? {} : msObj;
             msObj.title = msTitle;
             msObj.ms_date = this.getDisplayDate(msDate);
-            msObj.type = msType
+            msObj.type = msType;
         if(!msObj.ms_user) {
             var lead = this.getSelectedLead(msType);
             if(!lead) {alert("please select Leads for the project");return false;}
@@ -364,17 +397,12 @@ function ProjectTimeline()
         }
         if(!this.project || !this.project.bc_id) { alert("please select a project");return false;}
         
-        this.deleteMilestone(msDate, msType); //delete previous ms in the current date selected
-        this.deleteMilestone(oldDate, oldType); //delete ms in the previous date selected
+        this.deleteMilestone(msBcId); //delete ms rendered in the previous date column
 
+        //msObj.bc_id = this.getRandomMilestoneBcId(); add a temp id for the milestone
         //this.project.milestones.push(msObj);
         stages.reqServer('project/create/save_milestone', {project_id:this.project.bc_id, title:msObj.title, date:msObj.ms_date, user:msObj.ms_user, type:msObj.type, bc_id:msObj.bc_id}, self.afterAddMilestone);
         
-        var divCl = oldType == 'd' ? 'dev' : 'mrkt';
-        $('#'+ this.getDateKey(oldDate)).find('div.'+ divCl).html(this.getMilestoneHtml(false));
-        $('#'+ this.getDateKey(oldDate)).find('dt').bind('click', self.editMilestone);
-        
-        this.enableToolTips();
         return msObj;
     };
     
@@ -384,18 +412,19 @@ function ProjectTimeline()
         
         self.project.milestones.push(response.milestone);
         var divCl = response.milestone.type == 'd' ? 'dev' : 'mrkt';
-        var dtId = self.getDateKey(self.getDateObject(response.milestone.ms_date));
-        $('#'+dtId).find('div.'+ divCl).html(self.getMilestoneHtml(response.milestone));
-        $('#'+dtId).find('dt').bind('click', self.editMilestone);
-        self.enableToolTips();
+        var liId = self.getDateKey(self.getDateObject(response.milestone.ms_date));
+        $('#'+ liId).find('div.'+ divCl +' .empty_ms').remove(); //remove if there is any empty milestone wrap
+        $('#'+ liId).find('div.'+ divCl).append(self.getMilestoneHtml(response.milestone));
+       
+        self.enableToolTips($('#'+ liId));
         return false;
-    }
+    };
 
     this.getSelectedLead = function(type)
     {
         var leadName = type == 'd' ? $('#dlead').val() : $('#mlead').val();
         return stages.getUserByName(leadName);
-    }
+    };
 
     this.saveLead = function()
     {
@@ -418,6 +447,7 @@ function ProjectTimeline()
     this.afterSaveLead = function(response)
     {
         if(!stages.validateResponse(response) || !response.milestone) { return false; }
+        return true;
     };
 
     this.makeFieldAutocomplete = function(elmId, type, onSelect)
@@ -504,7 +534,7 @@ function ProjectTimeline()
     this.afterSaveProject = function(response)
     {
         alert(response);
-    }
+    };
     
     this.getDateObject = function(strDate)
     {
@@ -535,6 +565,32 @@ function ProjectTimeline()
         var params = keyStr.split('_');
         if(params.length < 3) {return false;}
         return new Date(params[3], params[1], params[2]);
+    };
+        
+    this.enableToolTips = function(parentElm)
+    {
+        var _style = {name: 'light',background: '#888',padding: 1,textAlign: 'center',color: '#fff',border: {width: 1,radius: 3,color: '#888'}, tip: 'topLeft'};
+        var _show = {delay:20};
+        var _hide = {delay:0};
+        var _position = {adjust: {x:-10,y:0}};
+        
+        var tipElms = [{parent: 'body.add #timeline', elm: '.dev dl.ms', tip: 'topLeft', posY: 0},
+                       {parent: 'body.add #timeline', elm: '.mrkt dl.ms', tip: 'bottomLeft', posY: -190},
+                       {parent: 'body.view-project #timeline ', elm: '.dev dl.ms', tip: 'topLeft', posY: 0},
+                       {parent: 'body.view-project #timeline ', elm: '.mrkt dl.ms', tip: 'bottomLeft', posY: -300},
+                       {parent: '#timeline', elm: '.dev dl.ms dt a, span.dday', tip: 'topLeft', posY: 0},
+                       {parent: '#timeline', elm: '.mrkt dl.ms dt a, span.mday', tip: 'bottomLeft', posY: -40}
+                       ];
+        for(var i in tipElms) {
+            var tipElm = tipElms[i];
+            var prElm = parentElm ? parentElm : $(tipElm.parent);
+            _style.tip = tipElm.tip;
+            _position.adjust.y = tipElm.posY;
+            $(prElm).find(tipElm.elm).each(function(){ //enable tooltip only if title is defined
+               if(!$(this).attr('title')){return;}
+               $(this).qtip({content: {text: false}, style: _style, show: _show, hide: _hide, position: _position});
+            });
+        }
     };
     
     this.viewMilestoneOnBc = function(bc_id)

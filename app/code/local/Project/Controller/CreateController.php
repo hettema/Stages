@@ -13,7 +13,7 @@ class Project_Controller_CreateController extends Core_Controller_Action
     {
         $this->getLayout()->getBlock('head')->setTitle('Create Project', false);
 
-        $this->getLayout()->getBlock('root')->addBodyClass('home logged-in');
+        $this->getLayout()->getBlock('root')->addBodyClass('add logged-in');
         $contentMain = $this->getLayout()->createBlock('core/template', 'content-main', array('template'=>'stages/project/create.phtml'));
 
         $this->getLayout()->getBlock('content')

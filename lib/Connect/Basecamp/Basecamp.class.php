@@ -2157,6 +2157,11 @@ class Basecamp {
     if(!isset($format))
       $format = $this->format;
       
+    // check whether authorozed
+    if($return['status'] == '401 Unauthorized' || strstr($return['status'], '401')) {
+        $return['body'] = null;
+    }
+    
     $return['body'] = trim($return['body']);
     if(!empty($return['body']) && $format == 'simplexml') {
       // return simplexml object

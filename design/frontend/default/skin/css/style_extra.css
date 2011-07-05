@@ -34,3 +34,10 @@
 .signup .submit             { color:#fff; background:#312C2D; font-size:14px; line-height:16px; font-weight:bold; padding:5px;
 							  -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px; border:0; cursor:pointer; margin:0 0 0 102px; }
 .signup #connect_bc_loader  { text-align:center; width:100%; }
+
+body.add #tw { height: 400px; margin-top: 230px;}
+body.add .scrollable { height: 340px; padding-top: 56px; }
+body.add .mavatars { top:26%; }
+body.add .davatars { bottom:18%; }
+body.add .sbtns { bottom: 78px; }
+body.add a.add_week { top: 76px; }
