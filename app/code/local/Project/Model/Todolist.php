@@ -12,7 +12,7 @@ class Project_Model_Todolist extends Stages_Model_Abstract
     /**
      * interval for refreshing the project todo from Basecamp
      */
-    const INTRL_TODO_REFRESH = 600;
+    const INTRL_TODO_REFRESH = 300;
     
     protected $_todos = null;
 
@@ -48,31 +48,29 @@ class Project_Model_Todolist extends Stages_Model_Abstract
             foreach ($tArray as $data) {
                 if(empty($data['id'])) { continue; }
                 $todolist = App_Main::getModel('project/todolist')->load($data['id'], 'bc_id');
-                if(!$todolist->getId()) {
-                    $todolist->setTitle($data['name']);
-                    $todolist->setProjectId($data['project-id']);
-                    $todolist->setMilestoneId($data['milestone-id']);
-                    $todolist->setDescription($data['description']);
-                    $todolist->setTodoCount($data['completed-count'] + $data['uncompleted-count']);
-                    $todolist->setTodoCompleted($data['completed-count']);
-                    $todolist->setTodoUncompleted($data['uncompleted-count']);
-                    $todolist->setBcId($data['id']);
-                    $todolist->setBcStatus(!(bool)$data['uncompleted-count']);
-                    $todolist->setBcTodoLoadedAt('0000-00-00 00:00:00');
+                
+                $todolist->setTitle($data['name']);
+                $todolist->setProjectId($data['project-id']);
+                $todolist->setMilestoneId($data['milestone-id']);
+                $todolist->setDescription($data['description']);
+                $todolist->setTodoCount($data['completed-count'] + $data['uncompleted-count']);
+                $todolist->setTodoCompleted($data['completed-count']);
+                $todolist->setTodoUncompleted($data['uncompleted-count']);
+                $todolist->setBcId($data['id']);
+                $todolist->setBcStatus(!(bool)$data['uncompleted-count']);
+                $todolist->setBcTodoLoadedAt('0000-00-00 00:00:00');
+                if(!$todolist->getAddedDate()) {
                     $todolist->setAddedDate(now());
+                }
+                if(!$todolist->getId() ||
+                    $todolist->getOrigData('todo_completed') != $todolist->getTodoCompleted() ||
+                    $todolist->getOrigData('todo_uncompleted') != $todolist->getTodoUncompleted() ||  
+                    $todolist->getOrigData('title') != $todolist->getTitle() ||
+                    $todolist->getOrigData('milestone_id') != $todolist->getMilestoneId()) {
+                    
                     $todolist->setUpdatedDate(now());
                     $todolist->save();
-                } else if($todolist->getTodoCompleted() != $data['completed-count'] || $todolist->getTodoUnCompleted() != $data['uncompleted-count']) {
-                    $todolist->setTodoCompleted($data['completed-count']);
-                    $todolist->setTodoUnCompleted($data['uncompleted-count']);
-                    $todolist->save();
-                } else if($todolist->getTitle() != $data['name']) {
-                    $todolist->setTitle($data['name']);
-                    $todolist->save();
-                } else if($todolist->getMilestoneId() != $data['milestone-id']) {
-                    $todolist->setMilestoneId($data['milestone-id']);
-                    $todolist->save();
-                }
+                } 
                 $todolists[] = $todolist;
             }
         }
@@ -85,19 +83,79 @@ class Project_Model_Todolist extends Stages_Model_Abstract
      * @param bool $fromBc
      * @return array todos 
      */
-    public function loadTodos($fromBc = false)
+    public function loadTodos($fromBc = false, $fromLocal = false)
     {
-         if($fromBc || time() - strtotime($this->getBcTodoLoadedAt()) > self::INTRL_TODO_REFRESH && (!isset($this->_todos))) {
+        if($fromLocal) {
+            return $this->getResource()->getTodos($this);
+        }
+        
+        if($fromBc || time() - strtotime($this->getBcTodoLoadedAt()) > self::INTRL_TODO_REFRESH) {
             $this->_todos = App_Main::getModel('project/todo')->loadTodosFromBc($this->getBcId());
-            $this->getResource()->updateBcTodoLoadedAt($this);
-        } else if(!$fromBc && !isset($this->_todos)) { 
+            
+            $this->setBcTodoLoadedAt(now());
+            $this->getResource()->updateBcTodoLoaded($this);
+            $this->updateTodoStats();
+        } else if(!isset($this->_todos)) { 
             $this->_todos = $this->getResource()->getTodos($this);
         }
         
-        $this->_todos = !empty ($todos) ? $todos : array();
+        $this->_todos = !empty ($this->_todos) ? $this->_todos : array();
         return $this->_todos;
     }
+    
+    /**
+     * Get the todos loaded under the timeline
+     * @return array 
+     */
+    public function getTodos()
+    {
+        return $this->_todos ? $this->_todos : array();
+    }
 
+    /**
+     * Get Todo by the todo identifier (dafault is todo Basecamp id)
+     * 
+     * @param int $id
+     * @param string $field
+     * @return Project_Model_Milestone 
+     */
+    public function getTodoById($id, $field = 'bc_id', $todos = array())
+    {
+        $todos = !empty ($todos) && is_array($todos) ? $todos : $this->getTodos();
+        foreach($todos as $todo) {
+            if(!$todo instanceof Project_Model_Todo) { continue; }
+            if($todo->getData($field) == $id) { return $todo; }
+        }
+        return false;
+    }
+    
+    /**
+     * Update the todo  stats completed, total, and uncompleted todos
+     * @return Project_Model_Todolist
+     */
+    private function updateTodoStats()
+    {
+        $todos = $this->getTodos();
+        $count = $completed = 0;
+        foreach($this->getTodos() as $todo) {
+            $count += 1;
+            $completed += $todo->getBcStatus();
+        }
+        $uncompleted = $count - $completed;
+        $this->setTodoCount($count);
+        $this->setTodoCompleted($completed);
+        $this->setTodoUncompleted($uncompleted);
+        if($this->getOrigData('todo_count') != $this->getTodoCount() ||
+           $this->getOrigData('todo_completed') != $this->getTodoCompleted() ||
+           $this->getOrigData('todo_uncompleted') != $this->getTodoUncompleted()) {
+                    
+            $this->setUpdatedDate(now());
+            $this->save();
+        } 
+        
+        return $this;
+    }
+    
     /**
      * Load the milestone corresponding to the todolist
      * If the milestone is not found in the local database it will be loaded from 

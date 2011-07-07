@@ -87,16 +87,15 @@ class Project_Model_Resource_Project extends Core_Model_Resource_Abstract
     {
         $_toDelete = array();
         foreach($this->getMilestones($object) as $prevMilestone) {
+            //check whether the milestone is existing in the newly loaded milestone array, if not mark it for delete
             if(!$object->getMilestoneById($prevMilestone->getBcId())) {
                 $_toDelete[] = $prevMilestone->getId();
             }
         }
         if(!empty ($_toDelete)) {
             $this->_getWriteAdapter()->query("DELETE FROM ". $this->tbl_milestone ." WHERE milestone_id IN (". implode(',', $_toDelete) .") AND project_id='". $object->getBcId() ."'");
-        
         }
         
-        $object->setBcMilestoneLoadedAt(now());
         $this->_getWriteAdapter()->query("UPDATE ". $this->getMainTable() ." SET bc_milestone_loaded_at='". $object->getBcMilestoneLoadedAt() ."' WHERE project_id=". $object->getId());
         return $object;
     }
@@ -111,16 +110,15 @@ class Project_Model_Resource_Project extends Core_Model_Resource_Abstract
     {
         $_toDelete = array();
         foreach($this->getTodolists($object) as $prevTodolist) {
+            //check whether the todolist is existing in the newly loaded todolist array, if not mark it for delete
             if(!$object->getTodolistById($prevTodolist->getBcId())) {
                 $_toDelete[] = $prevTodolist->getId();
             }
         }
         if(!empty ($_toDelete)) {
             $this->_getWriteAdapter()->query("DELETE FROM ". $this->tbl_todolist ." WHERE todolist_id IN (". implode(',', $_toDelete) .") AND project_id='". $object->getBcId() ."'");
-        
         }
         
-        $object->setBcTodolistLoadedAt(now());
         $this->_getWriteAdapter()->query("UPDATE ". $this->getMainTable() ." SET bc_todolist_loaded_at='". $object->getBcTodolistLoadedAt() ."' WHERE project_id=". $object->getId());
         return $object;
     }

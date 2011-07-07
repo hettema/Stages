@@ -50,6 +50,20 @@ class Stages_Helper_Data extends Core_Helper_Abstract
             return false;
         }
     }
+    
+    /**
+     * http://php.net/manual/en/ref.simplexml.php
+     * @param type $xmlObject
+     * @param type $out
+     * @return type 
+     */
+    public function xml2array ($xmlObject, $out = array())
+    {
+        foreach ((array)$xmlObject as $index => $node) {
+            $out[$index] = (is_object($node)) ? $this->xml2array ($node) : $node;
+        }
+        return $out;
+    }
 
     /**
      * Format the date for frontend javascript

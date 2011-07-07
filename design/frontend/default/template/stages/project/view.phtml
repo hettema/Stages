@@ -52,7 +52,7 @@ $_title = $_project->getTitle();
                 <h2>06/04/2011</h2>
             </hgroup>
         </header>
-
+        
         <a href="javascript:void(0)" class="sbtns next">Next</a>
         <a href="javascript:void(0)" class="sbtns prev">Prev</a>
         
@@ -80,7 +80,7 @@ $_title = $_project->getTitle();
 $(document).ready(function() {
     //initialize the Js object
     window.projectTL = new ProjectTimeline();
-    projectTL.init();
+    projectTL.init(300000);
     projectTL._canEdit = false;
 	<?php if($_project && $_project->getId()): ?>
     //load the project from server

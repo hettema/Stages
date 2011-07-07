@@ -9,10 +9,18 @@
  * @author      
  */
 ?>
+<?php
+if($this->getProject() instanceof Project_Model_Project) {
+    $_project = $this->getProject();
+} else {
+    $_project = App_Main::getModel('core/object');
+}
+$_title = $_project->getTitle();
+?>
 <section id="io">
 	<form id="project_edit_form" action="<?php echo $this->getUrl('project/create/save') ?>" method="post">
     	<div class="form_row">
-        	<label for="pname">Project Name</label> <input id="pname" name="pname" class="text" />
+        	<label for="pname">Project Name</label> <input id="pname" name="pname" class="text" value="<?php echo $_title ?>"/>
         </div>
         <div class="form_row">
         	<label for="mlead">Marketing Lead</label> <input id="mlead" name="mlead" class="text slct" />
@@ -70,8 +78,14 @@
 $(document).ready(function() {
     //initialize the Js object
     window.projectTL = new ProjectTimeline();
-    projectTL.init();
+    projectTL.init(300000);
     //set the start date as today date for the empty project timeline
     projectTL.setStartDate('<?php echo date('Y/d/m') ?>', true);
+    //load the project from server -- id specified
+    <?php if($_project->getBcId()) : ?>
+    projectTL.loadProject({bc_id:'<?php echo $_project->getBcId() ?>'});
+    <?php else: ?>
+        projectTL.enableCreateInterface();
+    <?php endif; ?>
 });
 </script>

@@ -14,26 +14,17 @@ class Connect_Basecamp extends Basecamp
 {
     public function createProject($name)
     {
-        /*$body = array(
-                  'project'=>array(
-                    'name'=>$name
-                    )
-                );
-
+        $body = array('project'=>array('name'=>$name));
         $this->setupRequestBody($body);
 
-        $response = $this->processRequest("{$this->baseurl}projects/projects.xml",'POST');*/
-            $body = array(
-
-        'project'=>array(
-
-            'name' => $name )
-
-        );
-
-    $this->setupRequestBody($body);
-
-    $this->processRequest("{$this->baseurl}projects.xml", 'POST'); 
+        $response = $this->processRequest("{$this->baseurl}projects.xml",'POST');
+        
+        if(!empty ($response) && $response['status'] == '201 Created') {      
+            $location = ltrim($response['location'], '/');
+            return $this->processRequest($this->baseurl . $location,"GET");
+        } else {
+            return false;
+        }
     }
 }
 ?>

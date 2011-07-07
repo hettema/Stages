@@ -141,6 +141,8 @@ class Stages_Model_User extends Stages_Model_Abstract
      * If the $reload flag is true the projects will be loaded directly from BC
      * insted of loading from the local DB cache
      * 
+     * @todo add a flag to reload projects based on the last load time 
+     * 
      * @param bool $reload
      * @return array $projects array of basecamp project each instances of Project_Model_Project
      */
@@ -151,6 +153,20 @@ class Stages_Model_User extends Stages_Model_Abstract
         }
         $this->_bcProjects = !$this->_bcProjects ? array() : $this->_bcProjects;
         return $this->_bcProjects;
+    }
+    
+    /**
+     * Add the project to the already loaded project list array
+     * 
+     * @param Project_Model_Project $project 
+     * @return Stages_Model_User
+     */
+    public function addProjectToStack(Project_Model_Project $project)
+    {
+        if(!$this->getProjectById($project->getBcId())) {
+            $this->_bcProjects[] = $project;
+        }
+        return $this;
     }
 
     /**

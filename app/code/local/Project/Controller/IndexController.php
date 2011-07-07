@@ -38,12 +38,13 @@ class Project_Controller_IndexController extends Core_Controller_Action
      */
     public function loadAction()
     {
-        if(!$this->isUserLoggedIn()) { return $this->_redirect(''); }
+        if(!$this->isUserLoggedIn()) { echo Zend_Json::encode(array('success'=>0, 'redirect'=>  App_Main::getUrl(''))); return; }
         
         $projectId = $this->getRequestParam('project_bc_id');
         if(!$project = App_Main::getSession()->getUser()->getProjectById($projectId, 'bc_id')) {
             $project = App_Main::getModel('project/project')->load($projectId, 'bc_id');
         }
+        //$project->setEndDate('2011-05-10');
         echo Zend_Json::encode(array('success'=>1, 'project'=>$project->prepareDataForJson(true, true)));
     }
 
@@ -54,7 +55,7 @@ class Project_Controller_IndexController extends Core_Controller_Action
      */
     public function viewAction()
     {
-        if(!$this->isUserLoggedIn()) { return $this->_redirect(''); }
+        if(!$this->isUserLoggedIn()) { echo Zend_Json::encode(array('success'=>0, 'redirect'=>  App_Main::getUrl(''))); return; }
 
         $projectId = $this->getRequestParam('id');
         $project = $this->_getSession()->getUser()->getProjectById($projectId, 'bc_id');

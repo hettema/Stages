@@ -129,7 +129,6 @@ function Stages()
         response(['m','d']);
     }
 
-
     this.getUser = function(q, field)
     {
         field = !field ? 'id' : field;
@@ -143,8 +142,10 @@ function Stages()
 
     this.getUserByName = function(name)
     {
-        for(var idx =0; idx < this._bcPeople.length;idx++) {
-            if(this._bcPeople[idx].firstname +' '+ this._bcPeople[idx].lastname == name) {
+        for(var idx =0; idx < this._bcPeople.length;idx++) {            
+            var nameTmp = $.trim(this._bcPeople[idx].firstname);
+                nameTmp += this._bcPeople[idx].lastname ? ' '+ $.trim(this._bcPeople[idx].lastname) : ''
+            if(nameTmp == $.trim(name)) {
                 return this._bcPeople[idx];
             }
         }

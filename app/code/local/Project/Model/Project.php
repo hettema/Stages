@@ -12,16 +12,16 @@ class Project_Model_Project extends Stages_Model_Abstract
     /**
      * interval for refreshing the project milestone from Basecamp
      */
-    const INTRL_MILESTONE_REFRESH = 1200;
+    const INTRL_MILESTONE_REFRESH = 600;
     /**
      * interval for refreshing the project todolist from Basecamp
      */
-    const INTRL_TODOLIST_REFRESH = 1200;
+    const INTRL_TODOLIST_REFRESH = 300;
     
     /**
      * interval for refreshing the project todo from Basecamp
      */
-    const INTRL_TODO_REFRESH = 1200;
+    const INTRL_TODO_REFRESH = 300;
     
     /**
      * interval for refreshing the project time entries from Basecamp
@@ -61,41 +61,52 @@ class Project_Model_Project extends Stages_Model_Abstract
         foreach($_respXml->project as $_xml) {
             //parse the project xml into array
             $data = $_helper->XMLToArray($_xml);
+            $project = $this->loadProjectFromBcData($data);            
+            if(empty ($project)) { continue; }
             
-            if(empty($data['id'])) { continue; }
-            $project = App_Main::getModel('project/project')->load($data['id'], 'bc_id');
-            //calculate the start date and end date for a new project
-            $createdTs = strtotime($data['created-on']);
-            $lastUpdatedTs = strtotime($data['last-changed-on']);
-            $project->setStartDate($this->calculateStartDate($createdTs));
-            $createdTs = strtotime($project->getStartDate());
-            //set the end date to the last updated date
-            $endDateTs = ($lastUpdatedTs - $createdTs) / 86400 < 27 ? (27 * 86400) + $createdTs : $lastUpdatedTs;
-            $endDate = $this->calculateEndDate($endDateTs);
-            
-            if(!$project->getId()) {
-                $project->setTitle($data['name']);
-                $project->setBcId($data['id']);
-                $project->setBcStatus($data['status']);
-                
-                $project->setEndDate($endDate);
-                
-                $project->setBcCreatedDate(date('Y-m-d H:i:s', strtotime($data['created-on'])));
-                $project->setAddedDate(now());
-                //set the end date for the project
-                $project->setUpdatedDate(date('Y-m-d H:i:s', strtotime($data['last-changed-on'])));
-                $project->save();
-            } else if($project->getTitle() != $data['name']) { //update the name of the project if it is updated in Basecamp
-                $project->setTitle($data['name']);
-                $project->save();
-            } else if($project->getEndDate() != $endDate) { //update the end date attribute of the project if it is updated at a later time compared to the current one Basecamp
-                $project->setEndDate($endDate);
-                $project->save();
-            }
-                
             $projects[] = $project;
         }
         return $projects;
+    }
+    
+    /**
+     * Load the project data array into project object model instance
+     * 
+     * @param array $data
+     * @return Project_Model_Project 
+     */
+    public function loadProjectFromBcData($data)
+    {
+        if(empty($data['id'])) { return false; }
+        $project = App_Main::getModel('project/project')->load($data['id'], 'bc_id');
+
+        //calculate the start date and end date for a new project
+        $createdTs = strtotime($data['created-on']);
+        $lastUpdatedTs = strtotime($data['last-changed-on']);
+        if(!$project->getStartDate()) {
+            $project->setStartDate($this->calculateStartDate($createdTs));
+        }
+        $createdTs = strtotime($project->getStartDate());
+        //set the end date to the last updated date
+        $endDateTs = ($lastUpdatedTs - $createdTs) / 86400 < 27 ? (27 * 86400) + $createdTs : $lastUpdatedTs;
+        $endDate = $this->calculateEndDate($endDateTs);            
+        $project->setEndDate($endDate);            
+        $project->setTitle($data['name']);
+        $project->setBcId($data['id']);
+        $project->setBcStatus($data['status']);
+        $project->setBcCreatedDate(date('Y-m-d H:i:s', strtotime($data['created-on'])));            
+        if(!$project->getAddedDate()) {
+            $project->setAddedDate(now());
+        }
+        if(!$project->getId() || 
+            $project->getOrigData('title') != $project->getTitle() || //update the name of the project if it is updated in Basecamp
+            $project->getOrigData('end_date') != $project->getEndDate()) { //update the end date attribute of the project if it is updated at a later time compared to the current one Basecamp       
+
+            // save the project data
+            $project->setUpdatedDate(now());
+            $project->save();
+        } 
+        return $project;
     }
 
     /**
@@ -107,16 +118,18 @@ class Project_Model_Project extends Stages_Model_Abstract
      * @param bool $loadFromDb
      * @return array milestones 
      */
-    public function getMilestones($fromBc = false, $loadFromDb = false)
+    public function getMilestones($fromBc = false, $fromLocal = false)
     {
-        if($loadFromDb) {
-            $this->_milestones = $this->getResource()->getMilestones($this);
+        if($fromLocal) { //get the cached milestones from DB 
+            return $this->getResource()->getMilestones($this);
         }
-        if($fromBc || time() - strtotime($this->getBcMilestoneLoadedAt()) > self::INTRL_MILESTONE_REFRESH && (!isset($this->_milestones))) {
+        
+        if($fromBc || time() - strtotime($this->getBcMilestoneLoadedAt()) > self::INTRL_MILESTONE_REFRESH) {
             $this->_milestones = App_Main::getModel('project/milestone')->loadMilestonesFromBc($this->getBcId());
             
+            $this->setBcMilestoneLoadedAt(now());
             $this->getResource()->updateBcMilestoneLoaded($this);
-        } else if(!$fromBc && !isset($this->_milestones)) { 
+        } else if(!isset($this->_milestones)) { 
             $this->_milestones = $this->getResource()->getMilestones($this);
         }
         
@@ -132,12 +145,18 @@ class Project_Model_Project extends Stages_Model_Abstract
      * @param bool $loadFromDb
      * @return array todolists 
      */
-    public function getTodoLists($fromBc = false)
+    public function getTodoLists($fromBc = false, $fromLocal = false)
     {
-        if($fromBc || time() - strtotime($this->getBcTodolistLoadedAt()) > self::INTRL_TODOLIST_REFRESH && (!isset($this->_todolists))) {
+        if($fromLocal) { 
+            //get the cached todolists from DB 
+            return $this->getResource()->getTodolists($this);
+        }
+        if($fromBc || time() - strtotime($this->getBcTodolistLoadedAt()) > self::INTRL_TODOLIST_REFRESH) {
             $this->_todolists = App_Main::getModel('project/todolist')->loadTodolistFromBc($this->getBcId());
+            
+            $this->setBcTodolistLoadedAt(now());
             $this->getResource()->updateBcTodolistLoaded($this);
-        } else if(!$fromBc && !isset($this->_todolists)) { 
+        } else if(!isset($this->_todolists)) { 
             $this->_todolists = $this->getResource()->getTodolists($this);
         }
         
@@ -155,13 +174,13 @@ class Project_Model_Project extends Stages_Model_Abstract
      */
     public function getTodos($fromBc = false)
     {
-        if($this->_todos || time() - $this->_todoLoadedAt < self::INTRL_TODO_REFRESH) { return $this->_todos; }
+        //if(is_array($this->_todos) || time() - $this->_todoLoadedAt < self::INTRL_TODO_REFRESH) { return $this->_todos; }
         $this->_todos = array();
         foreach($this->getTodoLists() as $todolist) {
             $todos = $todolist->loadTodos($fromBc);
             if(empty ($todos)) { continue; }
-            $todolist->setTodos($todos);
-            $this->_todos[] = array_merge($this->_todos, $todos);
+            
+            $this->_todos = array_merge($this->_todos, $todos);
         }
         return $this->_todos;
     }
@@ -175,21 +194,33 @@ class Project_Model_Project extends Stages_Model_Abstract
      * @param bool $loadFromDb
      * @return type 
      */
-    public function getTimeEntries($fromBc = true, $reloadAll = false)
+    public function getTimeEntries($fromBc = false, $reloadAll = false)
     {
-        if(isset($this->_timeEntries)) { return $this->_timeEntries; }
+        $fromBc = ($fromBc || time() - $this->_timeEntryLoadedAt < self::INTRL_TIMEENTRY_REFRESH);
+        if(isset($this->_timeEntries) && !$fromBc) { return $this->_timeEntries; }
         
+        //load the cached time entry data from DB
         $this->_timeEntries = $this->getResource()->getTimeEntries($this);
-        if($fromBc || time() - $this->_timeEntryLoadedAt < self::INTRL_TIMEENTRY_REFRESH) { 
+        if($fromBc) { 
             $this->_timeEntryLoadedAt = time();
-            if(!isset ($this->_timeEntries)) { $this->_timeEntries  = array(); }
             $page = 0;
-            while($page >= 0) { //load the time-entries till all the pages are completed
+            if(!isset ($this->_timeEntries) || $reloadAll) { 
+                //unset the data from DB if a full refresh from BC is requested
+                $this->_timeEntries  = array();
+            } else if(!$reloadAll) {
+                //load from the last pages
+                $page = ceil(count($this->_timeEntries) /50) - 1; 
+            }
+            
+            //load the time-entries iterating over all the pages
+            while($page >= 0) {
                 $results =  App_Main::getModel('project/time')->loadTimeFromBc($this->getBcId(), 'project', $page);
-                $page = (count($results) == 50) ? $page + 1 : $page - ($page+1);
+                //stop iteration (page =>  -1) if the count is less than 50, last page
+                $page = (count($results) == 50) ? $page + 1 : $page - ($page+1); 
                 foreach ($results as $timeEntry) {
                     if($this->getTimeEntryById($timeEntry->getBcId())) {
-                        if(!$reloadAll) { $page = -1; }
+                        //stop iteration if the time entry is already loaded
+                        if(!$reloadAll) { $page = -1; } 
                     } else {
                         array_push($this->_timeEntries, $timeEntry);
                     }
@@ -228,7 +259,30 @@ class Project_Model_Project extends Stages_Model_Abstract
     }
 
     /**
-     * Save the project data
+     * Create a new project in Basecamp with $title
+     * @todo this is to be complted with the functionality as the current API 
+     * is not able to perform creating a new project in Basecamp
+     * 
+     * @param string $title
+     * @return bool 
+     */
+    public function createNewBcProject($title)
+    {
+        $respXml = $this->getBcConnect()->createProject($title);
+        if(empty ($respXml['body'])) { return false; }
+        
+        $_respXml = simplexml_load_string($respXml['body']);
+        if(!$_respXml->id) { return false; }
+        
+        //parse the project xml into array
+        $data = $this->_getHelper()->XMLToArray($_respXml);
+        $project = $this->loadProjectFromBcData($data);
+        
+        return $project->getId() ? $project : false;
+    }
+
+    /**
+     * Save the project data submitted from the project edit form
      * called from Project_Controller_CreateController::saveAction
      * Marketing lead and the dev lead are submitted along with the data
      * 
@@ -237,19 +291,24 @@ class Project_Model_Project extends Stages_Model_Abstract
     public function saveProject($data)
     {
         //if the project doesnot exists create a new project in Basecamp
-        //@todo thi sfunctionality is not working with the current API, isuse is to be resolved
         if(!$this->getId()) {
             $this->setTitle($data['title']);
-            $this->createNewBcProject($data['title']);
+            $project = $this->createNewBcProject($data['title']);
+            if(!$project) { return false; }
+            
+            $this->load($project->getId());
         }
         $this->setMLead($data['m_lead']);
         $this->setDLead($data['d_lead']);
-        $this->setStartDate($this->_getHelper()->formatDateFromJs($data['d_start']));
-        $this->setEndDate($this->_getHelper()->formatDateFromJs($data['d_end']));
-
-        //process the milestone data passed from the form
-        $milestones = array();
+        
+        $this->save();
+        //add the project to the users loaded projects list
+        App_Main::getSession()->getUser()->addProjectToStack($this);
+        
+        
+        /*//process the milestone data passed from the form        
         if(!empty($data['milestones']) && is_array($data['milestones'])) {
+            $milestones = array();
             foreach($data['milestones'] as $msInfo) {
                 $msSaved = $this->saveMilestone($msInfo['title'], 
                                                 $msInfo['date'], 
@@ -259,9 +318,9 @@ class Project_Model_Project extends Stages_Model_Abstract
                 if(!$msSaved) { continue; }
                 $milestones[] = $msSaved;
             }
-        }
-        $this->_milestones = $milestones;
-        $this->save();
+            //$this->_milestones = $milestones;
+        }*/
+        return $this;
     }
     
     /**
@@ -296,29 +355,16 @@ class Project_Model_Project extends Stages_Model_Abstract
     }
 
     /**
-     * Create a new project in Basecamp with $title
-     * @todo this is to be complted with the functionality as the current API 
-     * is not able to perform creating a new project in Basecamp
-     * 
-     * @param string $title
-     * @return bool 
-     */
-    public function createNewBcProject($title)
-    {
-        $this->getBcConnect()->createProject($title);
-        return false;
-    }
-
-    /**
      * Get milestone by the milestone identifier (dafault is milestone Basecamp id)
      * 
      * @param int $id
      * @param string $field
      * @return Project_Model_Milestone 
      */
-    public function getMilestoneById($id, $field = 'bc_id')
+    public function getMilestoneById($id, $field = 'bc_id', $milestones = array())
     {
-        foreach($this->getMilestones() as $milestone) {
+        $milestones = !empty ($milestones) && is_array($milestones) ? $milestones : $this->getMilestones();
+        foreach($milestones as $milestone) {
             if(!$milestone instanceof Project_Model_Milestone) { continue; }
             if($milestone->getData($field) == $id) { return $milestone; }
         }
@@ -332,9 +378,10 @@ class Project_Model_Project extends Stages_Model_Abstract
      * @param string $field
      * @return Project_Model_Todolist 
      */
-    public function getTodolistById($id, $field = 'bc_id')
+    public function getTodolistById($id, $field = 'bc_id', $todolists = array())
     {
-        foreach($this->getTodolists() as $todolist) {
+        $todolists = !empty ($todolists) && is_array($todolists) ? $todolists : $this->getTodolists();
+        foreach($todolists as $todolist) {
             if(!$todolist instanceof Project_Model_Todolist) { continue; }
             if($todolist->getData($field) == $id) { return $todolist; }
         }
@@ -348,7 +395,7 @@ class Project_Model_Project extends Stages_Model_Abstract
      * @param string $field
      * @return Project_Model_Time 
      */
-    public function getTimeEntryById($id, $field = 'bc_id')
+    public function getTimeEntryById($id, $field = 'bc_id', $fromLocal = false)
     {
         foreach($this->getTimeEntries(false, false) as $timeEntry) {
             if(!$timeEntry instanceof Project_Model_Time) { continue; }
@@ -426,10 +473,10 @@ class Project_Model_Project extends Stages_Model_Abstract
      * @param bool $incTime
      * @return type 
      */
-    public function prepareDataForJson($incMilestone = false, $incTime = false)
+    public function prepareDataForJson($incMilestone = false, $incTime = false, $refreshBc = false)
     {
         if(!$this->getId()) { return false; }
-
+        
         $data = array();
         $data['id'] = $this->getId();
         $data['title'] = $this->getTitle();
@@ -445,10 +492,10 @@ class Project_Model_Project extends Stages_Model_Abstract
         }
         if($incMilestone) {
             $milestones = array();
-            $todoLists = $this->getTodoLists();
+            $todoLists = $this->getTodoLists($refreshBc);
             if(!$todoLists) { $todoLists = array(); }
-            $todos = $this->getTodos();
-            foreach($this->getMilestones() as $milestone) {
+            $todos = $this->getTodos($refreshBc); //todos are loaded to record the time entries and comments, other stats like total, completed, uncompleted are retrived along with todolist 
+            foreach($this->getMilestones($refreshBc) as $milestone) {
                 $msData = $milestone->prepareDataForJson();
 
                 //add todo list status
@@ -456,12 +503,12 @@ class Project_Model_Project extends Stages_Model_Abstract
                 foreach ($todoLists as $todoList) {
                     //continue if the todolist is not assiged under the current processed milestone
                     if($milestone->getBcId() != $todoList->getMilestoneId()) { continue; }
-                    //add the todo status
-                    $todos = $todoList->getTodos();
                     $todoData['lists'] += 1;
                     $todoData['count'] += $todoList->getTodoCount();
                     $todoData['completed'] += $todoList->getTodoCompleted();
                     $todoData['uncompleted'] += $todoList->getTodoUncompleted();
+                    //add the todo comments and hour status
+                    $todos = $todoList->getTodos();
                     //add the todo specific info into the todo stats (total comments and total hours)
                     if(!empty ($todos) && is_array($todos)) {
                         foreach($todos as $todo) {
