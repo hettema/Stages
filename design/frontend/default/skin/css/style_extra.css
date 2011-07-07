@@ -41,3 +41,7 @@ body.add .mavatars { top:26%; }
 body.add .davatars { bottom:18%; }
 body.add .sbtns { bottom: 78px; }
 body.add a.add_week { top: 76px; }
+
+div.scroll_date { text-indent: 0; }
+div.scroll_date .d_start { color:#999999; font-size: 12px; margin: 0 0 0 -470px; position:absolute; }
+div.scroll_date .d_end { color:#999999; font-size: 12px; margin: 0 0 0 430px; position:absolute; }

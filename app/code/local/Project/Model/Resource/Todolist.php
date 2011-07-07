@@ -42,12 +42,23 @@ class Project_Model_Resource_Todolist extends Core_Model_Resource_Abstract
      * @param Core_Model_Object $object
      * @return Core_Model_Object 
      */
-    public function updateBcTodoLoadedAt(Core_Model_Object $object)
+    public function updateBcTodoLoaded(Core_Model_Object $object)
     {
-        $object->setBcTodoLoadedAt(now());
+        $_toDelete = array();
+        foreach($this->getTodos($object) as $prevTodo) {
+            //check whether the milestone is existing in the newly loaded milestone array, if not mark it for delete
+            if(!$object->getTodoById($prevTodo->getBcId())) {
+                $_toDelete[] = $prevTodo->getId();
+            }
+        }
+        if(!empty ($_toDelete)) {
+            $this->_getWriteAdapter()->query("DELETE FROM ". $this->tbl_todo ." WHERE todo_id IN (". implode(',', $_toDelete) .") AND todolist_id='". $object->getBcId() ."'");
+        }
+                
         $this->_getWriteAdapter()->query("UPDATE ". $this->getMainTable() ." SET bc_todo_loaded_at='". $object->getBcTodoLoadedAt() ."' WHERE todolist_id=". $object->getId());
         return $object;
     }
+    
 }
 
 ?>

@@ -12,9 +12,16 @@ class Project_Controller_CreateController extends Core_Controller_Action
     public function indexAction()
     {
         $this->getLayout()->getBlock('head')->setTitle('Create Project', false);
-
+        
+        $projectId = $this->getRequestParam('id');
+        if($projectId) {
+            $project = $this->_getSession()->getUser()->getProjectById($projectId, 'bc_id');
+        } else {
+            $project = false;
+        }
+        
         $this->getLayout()->getBlock('root')->addBodyClass('add logged-in');
-        $contentMain = $this->getLayout()->createBlock('core/template', 'content-main', array('template'=>'stages/project/create.phtml'));
+        $contentMain = $this->getLayout()->createBlock('core/template', 'content-main', array('template'=>'stages/project/create.phtml', 'project'=>$project));
 
         $this->getLayout()->getBlock('content')
                                 ->append($contentMain, 'content-main');
@@ -28,16 +35,27 @@ class Project_Controller_CreateController extends Core_Controller_Action
      */
     public function saveAction()
     {
-        $data = $this->getRequestParam('project');
-        if(!empty($data['bc_id'])) {
-            $project = $this->_getSession()->getUser()->getProjectById($data['bc_id']);
-        }
-        if(empty($project)) {
+        if(!$this->isUserLoggedIn()) { echo Zend_Json::encode(array('redirect'=>  App_Main::getUrl(''))); return; }
+        
+        $data = array();
+        $data['m_lead'] = $this->getRequestParam('m_lead');
+        $data['d_lead'] = $this->getRequestParam('d_lead');
+        $bcId = $this->getRequestParam('project_bc_id');
+        if($bcId) {
+            $project = $this->_getSession()->getUser()->getProjectById($bcId);
+        } else if($title = $this->getRequestParam('project_title')) {
+            $data['title'] = $this->getRequestParam('project_title');
             $project = App_Main::getModel('project/project');
         }
-        $project->saveProject($data);
-        return $this->_redirectUrl(App_Main::getUrl('project/index/view'). '?id='. $project->getBcId());
-        echo 'saved';
+        
+        if($project && $project->saveProject($data)) {
+            $refrshBc = !empty($bcId);
+            echo Zend_Json::encode(array('success'=>1, 'project'=>$project->prepareDataForJson(true, true, $refrshBc)));
+        } else {
+            echo Zend_Json::encode(array('success'=>0, 'message'=>'Error saving the project'));
+        }
+        //return $this->_redirectUrl(App_Main::getUrl('project/index/view'). '?id='. $project->getBcId());
+        return false;
     }
 
     /**
@@ -71,6 +89,7 @@ class Project_Controller_CreateController extends Core_Controller_Action
     public function save_milestoneAction()
     {
         if(!$this->isUserLoggedIn()) { echo Zend_Json::encode(array('redirect'=>  App_Main::getUrl(''))); return; }
+        
         $success = 0;
         $projectId = $this->getRequestParam('project_id');
         if($projectId) {

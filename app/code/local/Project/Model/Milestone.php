@@ -37,21 +37,25 @@ class Project_Model_Milestone extends Stages_Model_Abstract
             foreach ($mArray as $data) {
                 if(empty($data['id'])) { continue; }
                 $milestone = App_Main::getModel('project/milestone')->load($data['id'], 'bc_id');
-                if(!$milestone->getId()) {
-                    $milestone->setTitle($data['title']);
-                    $milestone->setUserResponsible($data['responsible-party-id']);
-                    $milestone->setMilestoneDate(date('Y-m-d H:i:s', strtotime($data['deadline'])));
-                    $milestone->setProjectId($projectId);
-                    $milestone->setBcId($data['id']);
-                    $milestone->setBcCreatedDate(date('Y-m-d H:i:s', strtotime($data['created-on'])));
-                    $milestone->setBcStatus((bool)$data['completed']);
+                
+                $milestone->setTitle($data['title']);
+                $milestone->setUserResponsible($data['responsible-party-id']);
+                $milestone->setMilestoneDate(date('Y-m-d H:i:s', strtotime($data['deadline'])));
+                $milestone->setProjectId($projectId);
+                $milestone->setBcId($data['id']);
+                $milestone->setBcCreatedDate(date('Y-m-d H:i:s', strtotime($data['created-on'])));
+                $milestone->setBcStatus((bool)$data['completed']);
+                if(!$milestone->getAddedDate()) {
                     $milestone->setAddedDate(now());
+                }
+                if(!$milestone->getId() ||
+                   $milestone->getOrigData('title') != $milestone->getTitle() ||
+                   $milestone->getOrigData('status') != $milestone->getBcStatus() ||
+                   $milestone->getOrigData('milestone_date') != $milestone->getMilestoneDate()) {
+                    
+                    //save milestone data
                     $milestone->setUpdatedDate(now());
                     $milestone->save();
-                } else if($milestone->getTitle() != $data['title']) { //save the title is it is changed from BC
-                    $milestone->setTitle($data['title'])->save();
-                } else if($milestone->getStatus() != (bool)$data['completed']) { //save the status is it is changed from BC
-                    //$milestone->setBcStatus((bool)$data['completed'])->save();
                 }
                 $milestones[] = $milestone;
             }
@@ -73,7 +77,10 @@ class Project_Model_Milestone extends Stages_Model_Abstract
     }
 
     /**
-     *
+     * Save the milestone submitted from the project edit form
+     * 
+     * called from Project_Controller_CreateController::save_milestoneAction
+     * 
      * @param string $title Milestone title
      * @param string $date Milestone date
      * @param int $user Milestone user Basecamp id

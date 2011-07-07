@@ -6,6 +6,7 @@ function ProjectTimeline()
     this._canEdit = true;
     this._startDate = false;
     this._endDate = false;
+    this._currWeekIdx = 0;
     this._pDuration = 27;
     this._allowMultipleMs = false;
     this._projects = 0;
@@ -13,7 +14,9 @@ function ProjectTimeline()
     this._markLeads = new Array();
     this._developers = new Array();
     this._marketingExecutives = new Array();
-    this._project = false;
+    this._projectRefreshIntrl = 300;
+    this._projectLoadedAt = false;
+    this.project = false;
     
     this._weekStartDay = 1;
     this._projectStartDay = 1; // starts on monday by default
@@ -22,49 +25,79 @@ function ProjectTimeline()
     this._showSunday = true;
     var self = this;
 
-    this.init = function()
+    this.init = function(refreshIntrl)
     {
         //$('#tl_start').datepicker({onSelect: self.pickStartDate});
         //$('#tl_end').datepicker({onSelect: self.pickEndDate});
         //$('#timeline header h2').click(function() { $('#tl_start').datepicker('show'); });
         //$('#timeline footer h2').click(function() {$('#tl_end').datepicker('show');});
+        this._projectRefreshIntrl = refreshIntrl;
+        
         stages.loadBcInfo();
         stages.loadPeople();
         stages.loadProjects();
         stages.loadMilestoneIndex();
-        this.makeFieldAutocomplete('pname', 'project', this.loadProject);
-        this.makeFieldAutocomplete('mlead', 'people', this.saveLead);
-        this.makeFieldAutocomplete('dlead', 'people', this.saveLead);
+        this.makeFieldAutocomplete('pname', 'project', {select: this.loadProject});
+        this.makeFieldAutocomplete('mlead', 'people', {select:this.saveLead, change:this.saveLead});
+        this.makeFieldAutocomplete('dlead', 'people', {select:this.saveLead, change:this.saveLead});
 
         this.project = {}
         this.project.milestones = new Array();
     };
 
-    this.loadProject = function(project)
+    this.loadProject = function(project, hideTimeline)
     {
-        if(!project.bc_id) {alert('unable to load the project');return false;};
-
-        $('#timeline ul').remove();
+        if(!project || !project.bc_id) {return self.enableCreateInterface();};
+        if(!self.project || self.project.bc_id != project.bc_id) {
+            self.resetTimeline();
+        } else {
+            $('#timeline ul').hide();
+        }
         stages.reqServer('project/index/load', {project_bc_id:project.bc_id}, self.setProject);
     };
 
+    /**
+     * Refresh the project at the specified interval
+     */
+    this.refreshProject = function()
+    {    
+        if(!self.project) {return false;}
+        var curr = new Date();
+        if(curr - self._projectLoadedAt > self._projectRefreshIntrl) {
+            self.loadProject(self.project);
+        }
+        self._timer = setTimeout(self.refreshProject, self._projectRefreshIntrl);
+    };
+
+    /**
+     * Set the project and initialize drawing the timeline
+     */
     this.setProject = function(response)
     {
-        if(!stages.validateResponse(response) || !response.project) {
-            self.setStartDate(false, true); //reset date and redraw timeline
-            $('#tw').find('.btn_create a').html('<span class="bc"></span>Create This project on basecamp');
-            return false;
-        }
+        if(!stages.validateResponse(response) || !response.project) {return self.enableCreateInterface();}
+        
+        var reloadTL = (self.project && self.project.bc_id == response.project.bc_id) ? false :true;
+        
         self.project = response.project; 
+        self._projectLoadedAt = new Date();
         if(self.project.start_date) {self.setStartDate(self.project.start_date);}
         if(self.project.end_date) {self.setEndDate(self.project.end_date);}
         if(self.project.leads && self.project.leads['m']) {$('#mlead').val(stages.getUserName(self.project.leads['m']));}
         if(self.project.leads && self.project.leads['d']) {$('#dlead').val(stages.getUserName(self.project.leads['d']));}
-        $('#tw').find('.btn_create a').html('<span class="bc"></span>Update Project');
+        
+        self.enableEditInterface();
         //project view page
         $('#prjct').find('h1').text(self.project.title);
         $('#bc_link').attr('href', self.project.bc_link);
-        self.drawProjectTimeline();
+        if(reloadTL) {
+            $('#timeline ul').remove();
+            self.drawProjectTimeline();
+        } else {
+            $('#timeline ul').show();
+            self.reDrawProjectMilestones();
+        }
+        
+        this._timer = setTimeout(self.refreshProject, this._projectRefreshIntrl);
     };
     
     this.pickStartDate = function(dStart, inst) {self.setStartDate(dStart, true);};
@@ -104,31 +137,48 @@ function ProjectTimeline()
         }
         return this;
     };
-
+    
+    this.resetTimeline = function()
+    {
+        $('#timeline header h2').text('');
+        $('#timeline footer h2').text('');
+        $('div.qtip.qtip-light').remove();
+        $('#timeline').find('div.scroll_date').remove();
+        $('#week_items ul').remove();
+        $('#timeline ul').remove();
+    };
+    
     this.drawProjectTimeline = function()
     {
         $('#week_items ul').remove();
         this.hideMilestoneEdit();
         var sApi = $('.scrollable').data("scrollable");
         if(!sApi) {
-            $('.scrollable').scrollable({easing: 'swing', speed: 300, circular: false, keyboard: 'static' });
+            $('.scrollable').scrollable({easing: 'swing', speed: 600, circular: false, keyboard: 'static',  mousewheel: true});
+            sApi = $('.scrollable').data("scrollable");
         } else {
-            sApi.begin(200);
+            sApi.seekTo(0, 200);
         }
+        
+        sApi.onSeek(self.onScrollTL);
         
         var dCurr = new Date(this._startDate.getTime());
         var weekIdx = 0;
         while(dCurr.getTime() <= this._endDate.getTime()) {
             if(weekIdx == 0 || dCurr.getDay() == this._weekStartDay) {
                 weekIdx += 1;
-                var weekWrap = this.drawWeekColumn(dCurr);
+                var weekWrap = this.drawWeekColumn(dCurr, false, true);
             }
             dCurr.setDate(dCurr.getDate() + 1);
         }
-
+        
         this.drawProjectMilestones();
         
         this.enableToolTips();
+        
+        //scroll to timeline
+        var targetOffset = $('#timeline').offset().top;
+        $('html,body').animate({scrollTop: targetOffset}, 400);
     };
     
     this.addWeek = function()
@@ -142,13 +192,13 @@ function ProjectTimeline()
             
         }
         this.setEndDate(this.getDisplayDate(dStart), false);
-        var weekWrap = this.drawWeekColumn(dStart);
+        var weekWrap = this.drawWeekColumn(dStart, false, true);
         
         this.enableToolTips(weekWrap);
         return false;
     };
     
-    this.drawWeekColumn = function(dStart, dEnd)
+    this.drawWeekColumn = function(dStart, dEnd, scrollTo)
     {
         if(!dStart || dStart == 'undefined') {
             dStart = new Date(this._endDate.getTime());
@@ -171,13 +221,11 @@ function ProjectTimeline()
             weekWrap.append(this.drawDateColumn(dCurr));
             dCurr.setDate(dCurr.getDate() + 1);
         }
-        
         var api = $('.scrollable').data("scrollable");
             api.addItem(weekWrap);
-            if(api.getSize() > 4) {
-                api.seekTo(api.getSize() -4, 300);
-            }
-        
+        if(api.getSize() > 4 && scrollTo) {
+            api.seekTo(api.getSize() -4, 300);
+        }
         return weekWrap;
     };
 
@@ -196,6 +244,8 @@ function ProjectTimeline()
 
     this.drawProjectMilestones = function()
     {
+        if(!this.project || !this.project.milestones) { return false; }
+        
         for(var k =0; k < this.project.milestones.length; k++) {
             var milestone = this.project.milestones[k];
             
@@ -206,6 +256,13 @@ function ProjectTimeline()
         }
         return true;
     };
+    
+    this.reDrawProjectMilestones = function()
+    {
+        $('#week_items').find('div.ms_wrap').replaceWith(this.getMilestoneHtml(false));
+        this.drawProjectMilestones();
+        this.enableToolTips();
+    }
     
     this.getMilestoneById = function(bcId, returnIdx)
     {
@@ -239,7 +296,7 @@ function ProjectTimeline()
         var typeStr = milestone.type == 'd' ? 'dev' : 'marketing'
         if(milestone.todo_stats && milestone.todo_stats.lists > 0) {
             var stats = milestone.todo_stats
-            h = (stats.uncompleted * 100)/ 20;
+            h = (stats.count * 100)/ 20;
             h = h > 80 ? 80 : h;
             var completed = stats.count - stats.completed;
             if(stats.count) {
@@ -258,16 +315,14 @@ function ProjectTimeline()
     this.addNewMilestone = function(elm)
     {
         var type = $(elm).closest('div.dev, div.mrkt').hasClass('mrkt') ? 'm' : 'd';
-        var date = this.getDisplayDate(this.getDateFromKey($(elm).closest('li').attr('id')));
-            $(elm).closest('li').addClass('ms_editing');
-
+        var date = this.getDisplayDate(this.getDateFromKey($(elm).closest('li').attr('id')));        
         return this.showMilestoneEdit({ms_date: date, type: type}, elm);
     };
-
+    
     this.editMilestone = function(bcId)
     {
         if(!self._canEdit) {self.viewMilestoneOnBc(bcId);return false;}
-            
+        
         var elm =  $('#ms_'+ bcId).find('dt');
         return self.showMilestoneEdit(self.getMilestoneById(bcId), elm);
     };
@@ -275,7 +330,7 @@ function ProjectTimeline()
     this.showMilestoneEdit = function (data, elm)
     {
         if(!this._canEdit) {return false;}
-
+        
         this.hideMilestoneEdit(); //$('div.qtip.qtip-light.qtip-active').remove();
         var content = '<form id="qform" action="javascript:projectTL.saveMilestone()">';
             content += '<div class="col"><label for="msdate">Date</label><input id="msdate" class="text date" style="width:70px;" /></div>';
@@ -306,7 +361,7 @@ function ProjectTimeline()
                           }
                 }
         });
-        
+                
         if(data && data.title) {
             $('#mstitle').val(data.title);
         }
@@ -355,11 +410,11 @@ function ProjectTimeline()
             var milestone = this.addMilestone(msBcId, date, msType, msTitle);
             if(!milestone) {return;}
 
-            $('#'+ this.getDateKey(oldDate)).removeClass('ms_editing');
+            $('#'+ this.getDateKey(oldDate)).removeClass('ms_editing'); //@#Todo can we give this into the Qtip so that there is no need toadd/remove
         }
         this.hideMilestoneEdit();
     };
-
+    
     this.getRandomMilestoneBcId = function()
     {
         return 'tmp_'+ Math.floor(Math.random()*11000); //this.project.milestones.length + 1;
@@ -395,7 +450,7 @@ function ProjectTimeline()
             if(!lead) {alert("please select Leads for the project");return false;}
             msObj.ms_user = lead.bc_id;
         }
-        if(!this.project || !this.project.bc_id) { alert("please select a project");return false;}
+        if(!this.project || !this.project.bc_id) {alert("please select a project");return false;}
         
         this.deleteMilestone(msBcId); //delete ms rendered in the previous date column
 
@@ -408,7 +463,7 @@ function ProjectTimeline()
     
     this.afterAddMilestone = function(response)
     {
-        if(!stages.validateResponse(response) || !response.milestone) { return false; }
+        if(!stages.validateResponse(response) || !response.milestone) {return false;}
         
         self.project.milestones.push(response.milestone);
         var divCl = response.milestone.type == 'd' ? 'dev' : 'mrkt';
@@ -428,65 +483,51 @@ function ProjectTimeline()
 
     this.saveLead = function()
     {
-        if(!self.project || !self.project.bc_id) { return false; }
+        if(!self.project || !self.project.bc_id) {return false;}
         var pMLead = $.trim($('#mlead').val());
         var pDLead = $.trim($('#dlead').val());
         var pMLeadUser = stages.getUserByName(pMLead);
         var pDLeadUser = stages.getUserByName(pDLead);
-        if(!pDLeadUser || !pMLeadUser) {return false;}
+        if(pMLeadUser.bc_id != self.project.leads.m || pDLeadUser.bc_id != self.project.leads.d) {
+            $('#tw').find('.btn_create a').html('<span class="bc"></span>Update Project');
+        } else {
+            $('#tw').find('.btn_create a').html('<span class="bc"></span>Refresh Project');
+        }
+        return true;
+        /*if(!pDLeadUser || !pMLeadUser) {return false;}
         var data = {project_id:self.project.bc_id};
         
-        if(pMLeadUser) { data.m_lead = pMLeadUser.bc_id; }
-        if(pDLeadUser) { data.d_lead = pDLeadUser.bc_id; }
+        if(pMLeadUser) {data.m_lead = pMLeadUser.bc_id;}
+        if(pDLeadUser) {data.d_lead = pDLeadUser.bc_id;}
         
         stages.reqServer('project/create/save_lead', data, self.afterSaveLead);
-        return false;
+        return false;*/
         
     };
     
     this.afterSaveLead = function(response)
     {
-        if(!stages.validateResponse(response) || !response.milestone) { return false; }
+        if(!stages.validateResponse(response) || !response.milestone) {return false;}
         return true;
     };
 
-    this.makeFieldAutocomplete = function(elmId, type, onSelect)
+    this.enableCreateInterface = function()
     {
-        if(!type) {type ='people';}
-        switch (type)
-        {
-            case 'people':
-                var sourceFn = window.stages.searchPeople;
-            break;
-            case 'project':
-                var sourceFn = window.stages.searchProject;
-            break;
-            case 'milestone':
-                var sourceFn = window.stages.searchMilestone;
-            break;
-            break;
-            case 'milestone_type':
-                var sourceFn = window.stages.searchMilestoneType;
-            break;
-
-        }
-        if(!onSelect) {onSelect = function(){}};
-        $('input#'+ elmId).autocomplete({
-            source : sourceFn,
-            selectFirst: true,
-            minLength: 0,
-            select : function(event,ui) {onSelect(ui.item);}
-        }).focus(function(){
-            $(this).autocomplete("search")
-        });
-        $('input#'+ elmId).live("autocompleteopen", function() {
-                var autocomplete = $(this).data("autocomplete"),
-                menu = autocomplete.menu;
-                if (!autocomplete.options.selectFirst ) {return;}
-
-                menu.activate($.Event({type: "mouseenter"}), menu.element.children().first());
-
-        });
+        if(!this._canEdit) {return false;}
+        self.project = {};
+        self.setStartDate(false, true); //reset date and redraw timeline
+        $('#tw').find('.btn_create a').html('<span class="bc"></span>Create This project on basecamp');
+        $('#tw').height(130);
+        $('#timeline').hide();
+        return false;
+    };
+    
+    this.enableEditInterface = function()
+    {
+        if(!this._canEdit) {return false;}
+        $('#tw').find('.btn_create a').html('<span class="bc"></span>Refresh Project').show();
+        $('#tw').height(400);   
+        $('#timeline').show();     
     };
 
     this.saveProject = function()
@@ -503,8 +544,17 @@ function ProjectTimeline()
         if(!pMLeadUser) {alert('Error in finding the Marketig lead');return false;}
         var pDLeadUser = stages.getUserByName(pDLead);
         if(!pDLeadUser) {alert('Error in finding the Developing lead');return false;}
-
-        this.project.title = pName;
+        
+        var data = {m_lead: pMLeadUser.bc_id, d_lead: pDLeadUser.bc_id };
+        if(this.project && this.project.bc_id) {
+            data.project_bc_id = this.project.bc_id;
+        } else {
+            data.project_title = pName; 
+        }
+        stages.reqServer('project/create/save', data, self.afterSaveProject);
+        return false;
+        
+        
         this.project.leads = {m:pMLeadUser.bc_id, d:pDLeadUser.bc_id};
         $('#project_edit_form').append('<input type="hidden" value="'+ pName +'" name="project[title]" />');
         $('#project_edit_form').append('<input type="hidden" value="'+ pMLeadUser.bc_id +'" name="project[m_lead]" />');
@@ -525,17 +575,25 @@ function ProjectTimeline()
                 $('#project_edit_form').append('<input type="hidden" name="project[milestones]['+ k +'][bc_id]" value="'+ ms.bc_id +'" />');
             }
         }
-        $('#project_edit_form').submit();
+        //$('#project_edit_form').submit();
         return false;
-        $.post(stages.getUrl('project/create/save'), {project:JSON.stringify(this.project)}, {success: this.afterSaveProject},'json');
+        stages.reqServer('project/create/save', {project:JSON.stringify(this.project)}, self.afterSaveProject);
         
     };
 
     this.afterSaveProject = function(response)
     {
-        alert(response);
+        if(!response.project && response.message) {
+            alert(response.message);
+            return;
+        }
+        stages.loadProjects();
+        return self.setProject(response);
     };
     
+    /**
+     * Get date object for the string date
+     */
     this.getDateObject = function(strDate)
     {
         if(strDate.indexOf('-') > 0 ) {var spliter = '-';}
@@ -550,34 +608,46 @@ function ProjectTimeline()
         return new Date(yearVal, monthVal, dayVal);
     };
 
+    /**
+     * Get the string date in the format mm/dd/yyyy
+     */
     this.getDisplayDate = function(dDate)
     {
         return (dDate.getMonth()+1) +'/'+ dDate.getDate() +'/'+ dDate.getFullYear();
     }
 
+    /**
+     * Get the string date key in the format _m_dd_yyyy
+     */
     this.getDateKey = function(dDate)
     {
         return '_'+ dDate.getMonth() +'_'+ dDate.getDate() +'_'+ dDate.getFullYear();
     };
 
+    /**
+     * Get the date object from the key in the form m-dd-yyyy
+     */
     this.getDateFromKey = function(keyStr)
     {
         var params = keyStr.split('_');
         if(params.length < 3) {return false;}
         return new Date(params[3], params[1], params[2]);
     };
-        
+      
+    /**
+     * Enable tooltips for the timeline
+     */
     this.enableToolTips = function(parentElm)
     {
         var _style = {name: 'light',background: '#888',padding: 1,textAlign: 'center',color: '#fff',border: {width: 1,radius: 3,color: '#888'}, tip: 'topLeft'};
         var _show = {delay:20};
-        var _hide = {delay:0};
+        var _hide = {delay:0, fixed:true};
         var _position = {adjust: {x:-10,y:0}};
         
-        var tipElms = [{parent: 'body.add #timeline', elm: '.dev dl.ms', tip: 'topLeft', posY: 0},
-                       {parent: 'body.add #timeline', elm: '.mrkt dl.ms', tip: 'bottomLeft', posY: -190},
-                       {parent: 'body.view-project #timeline ', elm: '.dev dl.ms', tip: 'topLeft', posY: 0},
-                       {parent: 'body.view-project #timeline ', elm: '.mrkt dl.ms', tip: 'bottomLeft', posY: -300},
+        var tipElms = [{parent: 'body.add #timeline', elm: '.dev dl.ms', tip: 'topLeft', posY: -66},
+                       {parent: 'body.add #timeline', elm: '.mrkt dl.ms', tip: 'bottomLeft', posY: -120},
+                       {parent: 'body.view-project #timeline ', elm: '.dev dl.ms', tip: 'topLeft', posY: -180},
+                       {parent: 'body.view-project #timeline ', elm: '.mrkt dl.ms', tip: 'bottomLeft', posY: -120},
                        {parent: '#timeline', elm: '.dev dl.ms dt a, span.dday', tip: 'topLeft', posY: 0},
                        {parent: '#timeline', elm: '.mrkt dl.ms dt a, span.mday', tip: 'bottomLeft', posY: -40}
                        ];
@@ -593,8 +663,80 @@ function ProjectTimeline()
         }
     };
     
+    /**
+     * Show the date range while scrolling the timeline
+     */
+    this.onScrollTL = function()
+    {
+        var sApi = $('.scrollable').data("scrollable");
+        var sIdx = sApi.getIndex();
+        if(self._currWeekIdx && (self._currWeekIdx -1) == sIdx) {return false;}
+        self._currWeekIdx = sIdx + 1;
+        
+        var items = sApi.getItems();
+        if(!items[sIdx]) {return false;}
+        
+        var seIdx = items.length - (sIdx + 3) > 0 ? sIdx + 3 : items.length - 1;
+        var startId = $(items[sIdx]).find('li').eq(0).attr('id');
+        var endId = $(items[seIdx]).find('li').eq(5).attr('id');
+        if(!startId || !endId) {return false;}
+        
+        var dsStart = self.getDateFromKey(startId);
+        var dsEnd = self.getDateFromKey(endId);
+        
+        $('#timeline').find('div.scroll_date').remove();
+        return $('<div class="sbtns scroll_date"><span class="d_start">'+ self.getDisplayDate(dsStart) +'</span><span class="d_end">'+ self.getDisplayDate(dsEnd) +'</span></div>').insertAfter('#timeline header');
+    };
+    
+    /**
+     * Make the field autocomplete
+     */
+    this.makeFieldAutocomplete = function(elmId, type, events)
+    {
+        if(!events) { events = {}; }
+        if(!events.select) { events.select = function(){} };
+        if(!events.change) { events.change = function(){} };
+        
+        if(!type) {type ='people';}
+        switch (type)
+        {
+            case 'people':
+                var sourceFn = window.stages.searchPeople;
+            break;
+            case 'project':
+                var sourceFn = window.stages.searchProject;
+            break;
+            case 'milestone':
+                var sourceFn = window.stages.searchMilestone;
+            break;
+            break;
+            case 'milestone_type':
+                var sourceFn = window.stages.searchMilestoneType;
+            break;
+
+        }
+        
+        $('input#'+ elmId).autocomplete({
+            source : sourceFn,
+            selectFirst: true,
+            minLength: 0,
+            select : function(event,ui) {events.select(ui.item);},
+            change : function(event,ui) {events.change(ui.item);}
+        }).focus(function(){
+            $(this).autocomplete("search")
+        });
+        $('input#'+ elmId).live("autocompleteopen", function() {
+                var autocomplete = $(this).data("autocomplete"),
+                menu = autocomplete.menu;
+                if (!autocomplete.options.selectFirst ) {return;}
+
+                menu.activate($.Event({type: "mouseenter"}), menu.element.children().first());
+
+        });
+    };
+    
     this.viewMilestoneOnBc = function(bc_id)
     {
         window.open(stages.getBcHost()+'/projects/'+ this.project.bc_id +'/milestones/'+ bc_id +'/comments');
-    }
+    };
 }

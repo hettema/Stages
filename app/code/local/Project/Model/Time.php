@@ -55,21 +55,28 @@ class Project_Model_Time extends Stages_Model_Abstract
             foreach ($tArray as $data) {
                 if(empty($data['id'])) { continue; }
                 $timeEntry = App_Main::getModel('project/time')->load($data['id'], 'bc_id');
-                if(!$timeEntry->getId()) {
-                    $timeEntry->setDescription(substr($data['description'], 0, 254));
-                    $timeEntry->setProjectId($data['project-id']);
-                    $timeEntry->setTodoId($data['todo-item-id']);
-                    $timeEntry->setPersonId($data['person-id']);
-                    $timeEntry->setBcDate($data['date']);
-                    $timeEntry->setHours($data['hours']);
-                    $timeEntry->setBcId($data['id']);
+                
+                $timeEntry->setDescription(substr($data['description'], 0, 254));
+                $timeEntry->setProjectId($data['project-id']);
+                $timeEntry->setTodoId($data['todo-item-id']);
+                $timeEntry->setPersonId($data['person-id']);
+                $timeEntry->setBcDate($data['date']);
+                $timeEntry->setHours($data['hours']);
+                $timeEntry->setBcId($data['id']);
+                if(!$timeEntry->getAddedDate()) {
                     $timeEntry->setAddedDate(now());
+                }
+                
+                if(!$timeEntry->getId() ||
+                   $timeEntry->getOrigData('todo_id') != $timeEntry->getTodoId() ||
+                   $timeEntry->getOrigData('person_id') != $timeEntry->getPersonId() ||
+                   $timeEntry->getOrigData('bc_date') != $timeEntry->getBcDate() ||
+                   $timeEntry->getOrigData('hours') != $timeEntry->$timeEntry->getHours()) {
+                    
+                    //save time entry data
                     $timeEntry->setUpdatedDate(now());
                     $timeEntry->save();
-                } else if($timeEntry->getHours() != $data['hours']) { //save the hours if it is updated in Basecamp
-                    $timeEntry->setHours($data['hours']);
-                    $timeEntry->save();
-                }
+                } 
                 $timeEntries[] = $timeEntry;
             }
         }
