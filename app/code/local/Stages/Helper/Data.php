@@ -88,5 +88,26 @@ class Stages_Helper_Data extends Core_Helper_Abstract
         $params = explode('/', $strDt);
         return date('Y-m-d', mktime(null, null, null, $params[0], $params[1], $params[2]));
     }
+    
+    public function processMilestoneStats($todoData = array())
+    {
+        $todoCount = !empty($todoData['count']) ? $todoData['count'] : 0;
+        $completed =  !empty($todoData['completed']) ? $todoData['completed'] : 0;
+        $uncompleted = !empty($todoData['uncompleted']) ? $todoData['uncompleted'] : 0;
+        
+        $status = Project_Model_Milestone::MS_STATUS_NOTSTARTED;
+        if($todoCount == 0) { return $status; }
+        
+        if(!empty($todoData['comments']) || !empty($todoData['hours'])) {
+            $status = Project_Model_Milestone::MS_STATUS_STARTED;
+        }
+        
+        if($uncompleted == 0) {
+            $status = Project_Model_Milestone::MS_STATUS_FINISHED;
+        } else if($uncompleted > 0 && $completed > 0) {
+            $status = Project_Model_Milestone::MS_STATUS_STARTED;
+        }
+        return $status;
+    }
 }
 ?>

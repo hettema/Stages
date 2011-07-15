@@ -151,7 +151,7 @@ class Stages_Model_User extends Stages_Model_Abstract
         if(empty($this->_bcProjects) || $reload) {
             $this->_bcProjects = App_Main::getSingleton('project/project')->loadProjectsFromBc();
         }
-        $this->_bcProjects = !$this->_bcProjects ? array() : $this->_bcProjects;
+        $this->_bcProjects = empty($this->_bcProjects) ? array() : $this->_bcProjects;
         return $this->_bcProjects;
     }
     

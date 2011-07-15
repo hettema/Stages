@@ -27,9 +27,15 @@ class Stages_Controller_IndexController extends Core_Controller_Action
      */
     public function indexAction()
     {
-        if(!$this->isUserLoggedIn()) { return $this->loginAction(); }
-
-        return $this->_redirect('project');
+        $this->getLayout()->getBlock('root')->addBodyClass('home');
+        $contentMain = $this->getLayout()->createBlock('core/template', 'content-main', array('template'=>'cms/home.phtml'));
+        $this->getLayout()->getBlock('content')->append($contentMain, 'content-main');
+        $this->renderLayout();
+        
+        //if(!$this->isUserLoggedIn()) { return $this->loginAction(); }
+        
+        
+        //return $this->_redirect('project/index/view');
     }
 
     /**

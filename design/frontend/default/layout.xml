@@ -12,6 +12,9 @@
             <block type="page/html_header" name="header" as="header">
                 <block type="core/session_messages" name="session_messages" as="session_messages" />
             </block>
+            <block type="page/html_header" name="header_home" as="header_home" template="page/html/header_home.phtml">
+                <block type="core/session_messages" name="session_messages" as="session_messages" />
+            </block>
 
             <!--block type="page/html_breadcrumbs" name="breadcrumbs" as="breadcrumbs"/>
                 <block type="core/messages" name="messages" as="messages"/>

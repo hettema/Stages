@@ -19,7 +19,12 @@
 
     <?php /*<link rel="icon" href="<?php echo $this->getSkinUrl('favicon.ico') ?>" type="image/x-icon" />
     <link rel="shortcut icon" href="<?php echo $this->getSkinUrl('favicon.ico') ?>" type="image/x-icon" /> */ ?>
-    <link href="<?php echo $this->getSkinUrl('css/style.css'); ?>" rel="stylesheet" type="text/css" />
+    <?php if($this->getLayout()->getBlock('root')->getBodyClass() == 'home'): ?>
+        <link href="<?php echo $this->getSkinUrl('css/home.css'); ?>" rel="stylesheet" type="text/css" />
+    <?php else: ?>
+        <link href="<?php echo $this->getSkinUrl('css/style.css'); ?>" rel="stylesheet" type="text/css" />
+    <?php endif; ?>
+        
     <link href="<?php echo $this->getSkinUrl('css/style_extra.css'); ?>" rel="stylesheet" type="text/css" />
     <link href="<?php echo $this->getSkinUrl('js/ui/css/stages/jquery-ui-1.8.11.custom.css') ?>" rel="stylesheet" type="text/css" />
     <script src="<?php echo $this->getSkinUrl('js/jquery.js') ?>"></script>

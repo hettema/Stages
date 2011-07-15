@@ -56,9 +56,17 @@ class Project_Controller_IndexController extends Core_Controller_Action
     public function viewAction()
     {
         if(!$this->isUserLoggedIn()) { echo Zend_Json::encode(array('success'=>0, 'redirect'=>  App_Main::getUrl(''))); return; }
-
+        
+        $title = 'View Project';
         $projectId = $this->getRequestParam('id');
-        $project = $this->_getSession()->getUser()->getProjectById($projectId, 'bc_id');
+        if($projectId) {
+            $project = $this->_getSession()->getUser()->getProjectById($projectId, 'bc_id');
+            $title = 'View Project - '. $project->getTitle(); 
+        } else {
+            $project = false;
+        }
+        $this->getLayout()->getBlock('head')->setTitle($title, true);
+        
         $this->getLayout()->getBlock('root')->addBodyClass('view-project logged-in');
         $contentMain = $this->getLayout()->createBlock('core/template', 'content-main', array('template'=>'stages/project/view.phtml', 'project'=>$project));
         $this->getLayout()->getBlock('content')->append($contentMain, 'content-main');

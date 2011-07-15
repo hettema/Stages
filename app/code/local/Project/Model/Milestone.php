@@ -9,9 +9,13 @@
  */
 class Project_Model_Milestone extends Stages_Model_Abstract
 {
+    const MS_STATUS_NOTSTARTED = 0;
+    const MS_STATUS_FINISHED = 1;
+    const MS_STATUS_STARTED = 2;
+    
     protected $_todolists = array();
     protected $_todolistLoadedAt;
-
+     
 
     protected function _construct()
     {

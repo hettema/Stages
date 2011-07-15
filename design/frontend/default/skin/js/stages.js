@@ -91,7 +91,7 @@ $('.dev dt').qtip({
 
 
 $('#qdate').datepicker();
-	
+	    
 $(".scrollable").scrollable();
 
 // for the homepage
@@ -103,6 +103,6 @@ $('#features .scrollable').scrollable({
 		vertical:true,
 		clickable:true,
 		keyboard:true
-	}).navigator("#footer ul").circular().autoscroll({interval:10000});*/
-    
+	}).navigator("#footer ul").circular().autoscroll({interval:10000});
+	*/
 });

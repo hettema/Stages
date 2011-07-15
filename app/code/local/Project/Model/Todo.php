@@ -36,7 +36,7 @@ class Project_Model_Todo extends Stages_Model_Abstract
             foreach ($tArray as $data) {
                 if(empty($data['id'])) { continue; }
                 $todo = App_Main::getModel('project/todo')->load($data['id'], 'bc_id');
-                $status = (bool)$data['completed'];
+                $status = empty($data['completed']) || $data['completed'] == 'false' ? 0 : 1;
                 
                 $todo->setTitle(substr($data['content'],0, 254));
                 $todo->setTodolistId($data['todo-list-id']);

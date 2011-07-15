@@ -11,14 +11,16 @@ class Project_Controller_CreateController extends Core_Controller_Action
 {
     public function indexAction()
     {
-        $this->getLayout()->getBlock('head')->setTitle('Create Project', false);
+        $title = 'Create Project';
         
         $projectId = $this->getRequestParam('id');
         if($projectId) {
             $project = $this->_getSession()->getUser()->getProjectById($projectId, 'bc_id');
+            $title = 'Edit project - '. $project->getTitle(); 
         } else {
             $project = false;
         }
+        $this->getLayout()->getBlock('head')->setTitle($title, true);
         
         $this->getLayout()->getBlock('root')->addBodyClass('add logged-in');
         $contentMain = $this->getLayout()->createBlock('core/template', 'content-main', array('template'=>'stages/project/create.phtml', 'project'=>$project));

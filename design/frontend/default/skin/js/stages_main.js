@@ -54,9 +54,9 @@ function Stages()
         }
     };
 
-    this.loadProjects = function()
-    {
-        this.reqServer('stages/user/projects', {}, this.afterLoadProjects);
+    this.loadProjects = function(refresh)
+    {        
+        this.reqServer('stages/user/projects', {refresh_bc:refresh}, this.afterLoadProjects);
     };
 
     this.afterLoadProjects = function(response)

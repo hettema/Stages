@@ -10,13 +10,41 @@
  * @author      
  */
 ?>
-<?php if($this->getSession()->getUser()): ?>
-<footer class="usr"><?php echo $this->getSession()->getUser()->getName() ?> | 
-    <a href="<?php echo $this->getUrl('stages/user/refresh_projects') ?>">Refresh Projects</a> |
-    <a href="<?php echo $this->getUrl('project/create') ?>">Create Project</a> | 
-    <a href="<?php echo $this->getUrl('project/index/view') ?>">View Project</a> | 
-    <a href="<?php echo $this->getUrl('stages/index/logout') ?>">Sign out</a>
+<footer id="footer">
+	<?php if($this->getLayout()->getBlock('root')->getBodyClass() == 'home'): ?>
+    <nav>
+        <ul>
+            <li id="one" class="active"><a href="#"><strong>Open Source</strong> Stages is open source &amp;<br /> licencced under the GNU.</a></li>
+            <li id="two"><a href="#"><strong>Project Overview</strong> Get an instant oveview of the<br /> progress of your project.</a></li>
+            <li id="three"><a href="#"><strong>Intuitive</strong> Get an instant oveview of<br /> the progress of your project.</a></li>
+        </ul>
+	</nav>
+    
+    <script type="text/javascript">
+    $(document).ready(function() {    
+        $('#features .scrollable').scrollable({ 
+                size:1,
+                autoplay:true,
+                loop:true,
+                speed:1000,
+                vertical:true,
+                clickable:true,
+                keyboard:true
+            }).navigator("#footer ul").circular().autoscroll({interval:10000});
+    });
+    </script>
+    <?php endif ?>
 </footer>
-<?php endif; ?>
+<div class="usr">
+    <?php if($this->getSession()->getUser()): ?>
+        <?php echo $this->getSession()->getUser()->getName() ?> | 
+        <a href="javascript:stages.loadProjects(1)">Refresh Projects</a> |
+        <a href="<?php echo $this->getUrl('project/create') ?>">Create Project</a> | 
+        <a href="<?php echo $this->getUrl('project/index/view') ?>">View Project</a> | 
+        <a href="<?php echo $this->getUrl('stages/index/logout') ?>">Sign out</a>
+    <?php else: ?> 
+        <a href="<?php echo $this->getUrl('stages/index/login') ?>">Sign in</a>
+    <?php endif; ?>
+</div>
 
 <img src="<?php echo $this->getSkinUrl('img/border.png') ?>" id="border" />

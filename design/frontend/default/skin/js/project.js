@@ -89,6 +89,9 @@ function ProjectTimeline()
         //project view page
         $('#prjct').find('h1').text(self.project.title);
         $('#bc_link').attr('href', self.project.bc_link);
+        $('#edit_link').attr('href', stages.getUrl('project/create') + '?id=' + self.project.bc_id);
+        $('#project_links').show();
+        
         if(reloadTL) {
             $('#timeline ul').remove();
             self.drawProjectTimeline();
@@ -146,6 +149,7 @@ function ProjectTimeline()
         $('#timeline').find('div.scroll_date').remove();
         $('#week_items ul').remove();
         $('#timeline ul').remove();
+        $('#project_links').hide();
     };
     
     this.drawProjectTimeline = function()
@@ -298,14 +302,8 @@ function ProjectTimeline()
             var stats = milestone.todo_stats
             h = (stats.count * 100)/ 20;
             h = h > 80 ? 80 : h;
-            var completed = stats.count - stats.completed;
-            if(stats.count) {
-                dlCs = stats.count >0 && stats.uncompleted == 0 ? 'fin' :
-                                        stats.uncompleted >0 && stats.completed > 0 ? 'start' : 'non';
-            }
-            if(dlCs == 'non' && (stats.comments> 0 || stats.hours> 0) ) {
-                dlCs = 'start';
-            }
+            dlCs = milestone.ms_status_display == 1 ? 'fin' : 
+                                            milestone.ms_status_display == 2 ? 'start' : 'non';
             statsStr += 'Todo lists - '+ stats.lists +'<br/>Todos total - '+ stats.count +'<br/>Completed - '+ stats.completed +'<br/>Uncompleted - '+ stats.uncompleted +'<br/>Comments - '+ stats.comments +'<br/>Hours - '+ stats.hours;
         }
         

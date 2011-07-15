@@ -40,10 +40,14 @@ $_title = $_project->getTitle();
 
 	<header id="prjct">
     	<hgroup><h1><?php echo $_title ?></h1></hgroup>
+        
+        <div id="project_links" style="display: none; float:right; font-weight: bold; font-size: 12px; margin-top: -6px;">
+            <a href="#" style="color: #FAFAFA;" id="edit_link">Edit this project</a> 
+            &nbsp; &nbsp; 
+            <a href="#" style="color: #FAFAFA;" id="bc_link" target="_blank">View on Basecamp</a> 
+        </div>
     </header>
-
-    <a href="#" style="float:right; font-weight: bold; font-size: 12px; color: #FAFAFA;" id="bc_link" target="_blank">View on Basecamp</a>
-
+        
 	<section id="timeline">
         <header>
             <hgroup>

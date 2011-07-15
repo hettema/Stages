@@ -253,29 +253,16 @@ class Stages_Controller_UserController extends Core_Controller_Action
     public function projectsAction()
     {
         if(!$this->isUserLoggedIn()) { echo Zend_Json::encode(array('redirect'=>  App_Main::getUrl(''))); return; }
-        $projects = $this->_getSession()->getUser()->getProjectsJsList();
-
-        if(!empty($projects)) {
-            echo Zend_Json::encode(array('success'=>1,'projects'=>$projects));
-        } else { echo Zend_Json::encode(array('success'=>1)); }
-    }
-
-    /**
-     * Refresh the projects from basecamp 
-     * 
-     * @return type 
-     */
-    public function refresh_projectsAction()
-    {
-        if(!$this->isUserLoggedIn()) { return $this->_redirect(''); }
-        $projects = $this->_getSession()->getUser()->getProjects(true);
-
-        if(!empty($projects)) {
-            foreach($projects as $project) {
+        if($this->getRequestParam('refresh_bc') == 1) {
+            foreach($this->_getSession()->getUser()->getProjects(true) as $project) {
                 $project->setBcFullReload();
             }
-            return $this->_redirect('project/create');
-        } else { return $this->_redirect('project/create'); }
+        }
+        $projectsJs = $this->_getSession()->getUser()->getProjectsJsList();
+
+        if(!empty($projectsJs)) {
+            echo Zend_Json::encode(array('success'=>1,'projects'=>$projectsJs));
+        } else { echo Zend_Json::encode(array('success'=>1)); }
     }
     
     /**

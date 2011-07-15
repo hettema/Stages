@@ -1,0 +1,58 @@
+<?php
+/**
+ * Page Header
+ * 
+ * @package Page
+ * @subpackage Header
+ * @category Html
+ * @uses Page_Block_Html_Header
+ * @copyright Copyright (c) 2010 Hettema&Bergsten
+ * @author      
+ */
+?>
+<section id="features">
+	 <section class="scrollable">
+        <section class="items">
+        	
+            <section class="os">
+            	<header id="logo">
+                    <h1><a href="<?php echo $this->getUrl('') ?>" title="Stages homepage">Stages | Basecamp productivity</a></h1>
+                </header>
+            	<h2>An open source basecamp companion that makes managing milestones a breeze.</h2>
+                <ul class="gallery">
+                	<li class="g1"><a href="#">View image</a></li>
+                    <li class="g2"><a href="#">View image</a></li>
+                    <li class="g3"><a href="#">View image</a></li>
+                </ul>
+                <a class="lm next">Looks cool, show me how to use it &raquo;</a>
+                <aside id="download"><a href="<?php echo 'http://github.com/hettema/Stages'?>"><img src="<?php echo $this->getSkinUrl('img/icn_dl.png') ?>" width="23" height="23" />Download Now</a></aside>
+            </section> <!-- end of open source -->
+            
+            <section class="ov">
+				<section id="key">            
+		           	<label>Key</label>
+                    <ul class="key">
+                        <li><span class="mktng"></span> Marketing</li>
+                        <li><span class="dvlp"></span> Development</li>
+                        <li><img src="<?php echo $this->getSkinUrl('img/ms.gif') ?>" width="10" height="10" alt="Milestone" /> Milestone</li>
+                        <li><img src="<?php echo $this->getSkinUrl('img/complete.gif') ?>" width="25" height="10" alt="Complete" /> Complete</li>
+                        <li><img src="<?php echo $this->getSkinUrl('img/started.gif') ?>" width="25" height="10" alt="started" /> Started</li>
+                        <li><img src="<?php echo $this->getSkinUrl('img/notstarted.gif') ?>" width="25" height="10" alt="Not Started" /> Not started</li>
+                    </ul>
+            	</section>
+                
+                <div id="bars">
+                	<div class="b1"></div>
+                    <div class="b2"></div>
+                    <div class="b3"></div>
+                    <div class="b4"></div>
+                </div>
+                
+                <h1>Hover a hotspot to discover a few features</h1>
+                
+            </section> <!-- end of overview -->
+            
+     	</section>
+     </section>    
+</section>
+<div id="message-zone" class="message-wrap"><?php echo $this->getChildHtml('session_messages') ?></div>

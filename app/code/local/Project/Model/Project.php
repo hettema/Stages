@@ -439,6 +439,7 @@ class Project_Model_Project extends Stages_Model_Abstract
      */
     public function setBcFullReload()
     {
+        //set the milestone and todolist loaded time to a previous day so that it gets refreshed from server
         $this->getResource()->setBcFullReload($this);
         return $this;
     }
@@ -491,11 +492,16 @@ class Project_Model_Project extends Stages_Model_Abstract
             $times = $this->getTimeEntries();            
         }
         if($incMilestone) {
-            $milestones = array();
+            $milestones = $this->getMilestones($refreshBc);
             $todoLists = $this->getTodoLists($refreshBc);
             if(!$todoLists) { $todoLists = array(); }
             $todos = $this->getTodos($refreshBc); //todos are loaded to record the time entries and comments, other stats like total, completed, uncompleted are retrived along with todolist 
-            foreach($this->getMilestones($refreshBc) as $milestone) {
+            
+            if(empty($milestones) && !$refreshBc) { $milestones = $this->getMilestones(true); }            
+            if(!empty($milestones) && empty($todoLists) && !$refreshBc) { $todoLists = $this->getTodoLists(true); }
+            
+            $msArray = array();            
+            foreach($milestones as $milestone) {
                 $msData = $milestone->prepareDataForJson();
 
                 //add todo list status
@@ -518,9 +524,10 @@ class Project_Model_Project extends Stages_Model_Abstract
                     }
                 }
                 $msData['todo_stats'] = $todoData;
-                $milestones[] = $msData;
+                $msData['ms_status_display'] = App_Main::getHelper('stages')->processMilestoneStats($todoData);
+                $msArray[] = $msData;
             }
-            $data['milestones'] = $milestones;
+            $data['milestones'] = $msArray;
         }
         return $data;
     }
