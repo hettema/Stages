@@ -136,10 +136,12 @@ a.add_week:hover{ background-position:0 -16px; }
 .mrkt .fin dt		{ background:url(../img/timeline/marketing/fin.png) repeat; }
 .mrkt .start dt		{ background:url(../img/timeline/marketing/started.png) repeat; }
 .mrkt .non dt		{ background:url(../img/timeline/marketing/non.png) repeat; }
+.mrkt .od dt		{ background:url(../img/timeline/marketing/od.png) repeat; }
 .mrkt dd			{ bottom:2px; }
 .mrkt .fin dd		{ background:url(../img/timeline/marketing/fin.png) repeat; }
 .mrkt .start dd		{ background:url(../img/timeline/marketing/started.png) repeat; }
 .mrkt .non dd		{ background:url(../img/timeline/marketing/non.png) repeat; }
+.mrkt .od dd		{ background:url(../img/timeline/marketing/od.png) repeat; }
 #tw .mrkt .avatar	{ top:1px; left:1px; }
 .mrkt .ms_t			{ top:-55px; left:0;
 					  -moz-transform: rotate(-30deg);  /* FF3.5+ */
@@ -159,10 +161,12 @@ a.add_week:hover{ background-position:0 -16px; }
 .dev .fin dt		{ background:#a3ba1c; }
 .dev .start dt		{ background:#fff568; }
 .dev .non dt		{ background:#7b2e00; }
+.dev .od dt			{ background:#007281; }
 .dev dd				{ top:2px; }
 .dev .fin dd		{ background:#a3ba1c; }
 .dev .start dd		{ background:#fff568; }
 .dev .non dd		{ background:#7b2e00; }
+.dev .od dd			{ background:#007281; }
 #tw .dev .avatar	{ bottom:2px; left:1px; }
 .dev .ms_t			{ bottom:-55px; left:0;
 					  -moz-transform: rotate(30deg);  /* FF3.5+ */
@@ -176,7 +180,7 @@ a.add_week:hover{ background-position:0 -16px; }
 
 /* -- Scrollable -- */
 .scrollable 			{ position:relative; width:785px; height:600px; left:50%; overflow:hidden; padding-top:72px; margin:90px 0 0 -388px; float:left; display:inline; }
-.scrollable .items 	{ width:20000em; height:600px; position:absolute; }
+.scrollable .items 		{ width:20000em; height:600px; position:absolute; }
 .sbtns					{ z-index:99; position:absolute; bottom:65px; width:12px; height:13px; left:50%; display:block; text-indent:-999999px; }
 a.next					{ background:url(../img/btn_next.png) 0 -13px no-repeat; margin:0 0 0 405px; }
 a.prev					{ background:url(../img/btn_prev.png) 0 -13px no-repeat; margin:0 0 0 -410px; }
@@ -188,15 +192,15 @@ a.prev					{ background:url(../img/btn_prev.png) 0 -13px no-repeat; margin:0 0 0
 /* -------------------------------------------------------------------------- */
 body.add				{ height:auto; }
 body.add #tw			{ height:300px; }
-.btn_create	a		{ width:400px; height:46px; position:absolute; bottom:-80px; left:50%; margin:0 0 0 -200px; border:2px solid #777; font-weight:bold; font-size:17px; line-height:46px; color:#ccc;
-					  text-transform:uppercase; background:url(../img/btn_create.png) repeat; text-shadow:1px 1px 3px rgba(0,0,0,0.5); text-align:center;
-					  -webkit-border-radius:10px; -moz-border-radius:10px; border-radius:10px;
-					}
-.btn_create	span	{ width:50px; height:46px; float:left; display:inline; background:#777 url(../img/icn_bc.png) 50% 50% no-repeat;
-					  -moz-border-radius-topleft:5px; -webkit-border-top-left-radius:5px; border-top-left-radius:5px;
-				  	  -moz-border-radius-bottomleft:5px; -webkit-border-bottom-left-radius:5px; border-bottom-left-radius:5px;
-					}
-.btn_create a:hover	{ color:#fff; background:#555; }
+.btn_create	a			{ width:400px; height:46px; position:absolute; bottom:-80px; left:50%; margin:0 0 0 -200px; border:2px solid #777; font-weight:bold; font-size:17px; line-height:46px; color:#ccc;
+						  text-transform:uppercase; background:url(../img/btn_create.png) repeat; text-shadow:1px 1px 3px rgba(0,0,0,0.5); text-align:center;
+						  -webkit-border-radius:10px; -moz-border-radius:10px; border-radius:10px;
+						}
+.btn_create	span		{ width:50px; height:46px; float:left; display:inline; background:#777 url(../img/icn_bc.png) 50% 50% no-repeat;
+						  -moz-border-radius-topleft:5px; -webkit-border-top-left-radius:5px; border-top-left-radius:5px;
+				  		  -moz-border-radius-bottomleft:5px; -webkit-border-bottom-left-radius:5px; border-bottom-left-radius:5px;
+						}
+.btn_create a:hover		{ color:#fff; background:#555; }
 body.add .scrollable,
 body.add .items			{ height:300px; padding-top:0; margin-top:23px; }
 body.add .sbtns 		{ bottom:35px; }
@@ -204,4 +208,4 @@ body.add .sbtns 		{ bottom:35px; }
 
 /* -- Projects page --------------------------------------------------------- */
 /* -------------------------------------------------------------------------- */
-body.view-project #io	{ top:125px; }
+body.project #io	{ top:125px; }

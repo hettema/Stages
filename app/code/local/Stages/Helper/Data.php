@@ -89,7 +89,7 @@ class Stages_Helper_Data extends Core_Helper_Abstract
         return date('Y-m-d', mktime(null, null, null, $params[0], $params[1], $params[2]));
     }
     
-    public function processMilestoneStats($todoData = array())
+    public function processMilestoneStats($milestone, $todoData = array())
     {
         $todoCount = !empty($todoData['count']) ? $todoData['count'] : 0;
         $completed =  !empty($todoData['completed']) ? $todoData['completed'] : 0;
@@ -102,10 +102,13 @@ class Stages_Helper_Data extends Core_Helper_Abstract
             $status = Project_Model_Milestone::MS_STATUS_STARTED;
         }
         
-        if($uncompleted == 0) {
+        if($uncompleted == 0 || $milestone->getBcStatus() == 1) {
             $status = Project_Model_Milestone::MS_STATUS_FINISHED;
         } else if($uncompleted > 0 && $completed > 0) {
             $status = Project_Model_Milestone::MS_STATUS_STARTED;
+        }
+        if($status != Project_Model_Milestone::MS_STATUS_FINISHED && strtotime($milestone->getMilestoneDate()) < time()) {
+            $status = Project_Model_Milestone::MS_STATUS_OVERDUE;
         }
         return $status;
     }

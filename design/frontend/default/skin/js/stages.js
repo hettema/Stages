@@ -1,4 +1,78 @@
 $(document).ready(function() {
+// Shake homepage numbers on hover
+	//$('.s1').hover(function(){$('#s1').effect('shake', { times:3,distance:2 }, 100);},{/*do nothing*/});
+	//$('.s2').hover(function(){$('#s2').effect('shake', { times:3,distance:2 }, 100);},{/*do nothing*/});
+	
+	$('#top a').click(function() {
+		$('nav a').removeClass('active');
+		$('#top a').addClass('active');
+		$('html, body').animate({scrollTop: $(".os").offset().top},1000);
+		$('html').removeClass();
+		return false;
+	});
+	$('#one a, .os .lm, .gallery .g1 a').click(function() {
+		$('nav a').removeClass('active');
+		$('#one a').addClass('active');
+		$('html, body').animate({scrollTop: $(".vis").offset().top},1000);
+		$('html').removeClass();
+		return false;
+	});
+	$('#two a, .vis .lm, .gallery .g2 a').click(function() {
+		$('nav a').removeClass('active');
+		$('#two a').addClass('active');
+		$('html, body').animate({scrollTop: $(".av").offset().top},1000);
+		$('html').removeClass();
+		return false;
+	});
+	$('#three a, .av .lm').click(function() {
+		$('nav a').removeClass('active');
+		$('#three a').addClass('active');
+		$('html, body').animate({scrollTop: $(".ss").offset().top},1000);
+		$('html').removeClass();
+		return false;
+	});
+	$('#four a, .ss .lm, .gallery .g3 a').click(function() {
+		$('nav a').removeClass('active');
+		$('#four a').addClass('active');
+		$('html, body').animate({scrollTop: $(".ov").offset().top},1000);
+		$('html').addClass('scroll');
+		return false;
+	});
+	$('#five a, .ov .lm').click(function() {
+		$('nav a').removeClass('active');
+		$('#five a').addClass('active');
+		$('html, body').animate({scrollTop: $(".git").offset().top},1000);
+		$('html').removeClass();
+		return false;
+	});
+	
+	/*$('ul.gallery a').fancybox({
+		'transitionIn'	:	'elastic',
+		'transitionOut'	:	'elastic',
+		'speedIn'		:	600, 
+		'speedOut'		:	200, 
+		'overlayShow'	:	false
+	});*/
+	
+	/* Homepage waypoints
+	$('.os .lm').waypoint(function(){$('nav a').removeClass('active');});
+	
+	$('.vis').waypoint(function(){
+		$('nav a').removeClass('active');
+		$('#one a').addClass('active');
+	});
+	$('.av').waypoint(function(){
+		$('nav a').removeClass('active');
+		$('#two a').addClass('active');
+	});
+	$('.ss').waypoint(function(){
+		$('nav a').removeClass('active');
+		$('#three a').addClass('active');
+	});
+	$('.ov').waypoint(function(){
+		$('nav a').removeClass('active');
+		$('#four a').addClass('active');
+	}); */
 
 /*$('dl.ms dt a[title]').qtip({
 	content: {

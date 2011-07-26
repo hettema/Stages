@@ -12,6 +12,7 @@ class Project_Model_Milestone extends Stages_Model_Abstract
     const MS_STATUS_NOTSTARTED = 0;
     const MS_STATUS_FINISHED = 1;
     const MS_STATUS_STARTED = 2;
+    const MS_STATUS_OVERDUE = 3;
     
     protected $_todolists = array();
     protected $_todolistLoadedAt;
@@ -42,13 +43,14 @@ class Project_Model_Milestone extends Stages_Model_Abstract
                 if(empty($data['id'])) { continue; }
                 $milestone = App_Main::getModel('project/milestone')->load($data['id'], 'bc_id');
                 
+                $status = empty($data['completed']) || $data['completed'] == 'false' ? 0 : 1;
                 $milestone->setTitle($data['title']);
                 $milestone->setUserResponsible($data['responsible-party-id']);
                 $milestone->setMilestoneDate(date('Y-m-d H:i:s', strtotime($data['deadline'])));
                 $milestone->setProjectId($projectId);
                 $milestone->setBcId($data['id']);
                 $milestone->setBcCreatedDate(date('Y-m-d H:i:s', strtotime($data['created-on'])));
-                $milestone->setBcStatus((bool)$data['completed']);
+                $milestone->setBcStatus($status);
                 if(!$milestone->getAddedDate()) {
                     $milestone->setAddedDate(now());
                 }

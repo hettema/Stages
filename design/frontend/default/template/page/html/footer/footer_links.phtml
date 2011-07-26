@@ -14,14 +14,17 @@
 	<?php if($this->getLayout()->getBlock('root')->getBodyClass() == 'home'): ?>
     <nav>
         <ul>
-            <li id="one" class="active"><a href="#"><strong>Open Source</strong> Stages is open source &amp;<br /> licencced under the GNU.</a></li>
-            <li id="two"><a href="#"><strong>Project Overview</strong> Get an instant oveview of the<br /> progress of your project.</a></li>
-            <li id="three"><a href="#"><strong>Intuitive</strong> Get an instant oveview of<br /> the progress of your project.</a></li>
+        	<li id="top"><a href="#" class="active"><strong>Top</strong></a></li>
+            <li id="one"><a href="#"><strong>Visual Milestones</strong> Size matters! Full progress information at a glance</a></li>
+            <li id="two"><a href="#"><strong>Who's Responsible?</strong> Put faces to Milestones</a></li>
+            <li id="three"><a href="#"><strong>Suits &amp; Shirts</strong> Marketing &amp; development milestones are connected</a></li>
+            <li id="four"><a href="#"><strong>The Full Picture</strong> Check out an example timeline</a></li>
+            <li id="five"><a href="#"><strong>Open Source</strong> GNU, free, awesome! Join us!</a></li>
         </ul>
 	</nav>
     
     <script type="text/javascript">
-    $(document).ready(function() {    
+    /*$(document).ready(function() {    
         $('#features .scrollable').scrollable({ 
                 size:1,
                 autoplay:true,
@@ -31,7 +34,7 @@
                 clickable:true,
                 keyboard:true
             }).navigator("#footer ul").circular().autoscroll({interval:10000});
-    });
+    });*/
     </script>
     <?php endif ?>
 </footer>

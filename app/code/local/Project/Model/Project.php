@@ -524,7 +524,7 @@ class Project_Model_Project extends Stages_Model_Abstract
                     }
                 }
                 $msData['todo_stats'] = $todoData;
-                $msData['ms_status_display'] = App_Main::getHelper('stages')->processMilestoneStats($todoData);
+                $msData['ms_status_display'] = App_Main::getHelper('stages')->processMilestoneStats($milestone, $todoData);
                 $msArray[] = $msData;
             }
             $data['milestones'] = $msArray;

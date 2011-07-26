@@ -26,11 +26,17 @@
     <?php endif; ?>
         
     <link href="<?php echo $this->getSkinUrl('css/style_extra.css'); ?>" rel="stylesheet" type="text/css" />
-    <link href="<?php echo $this->getSkinUrl('js/ui/css/stages/jquery-ui-1.8.11.custom.css') ?>" rel="stylesheet" type="text/css" />
     <script src="<?php echo $this->getSkinUrl('js/jquery.js') ?>"></script>
-    <script src="<?php echo $this->getSkinUrl('js/ui/js/jquery-ui-1.8.11.custom.min.js') ?>"></script>
-    <script src="<?php echo $this->getSkinUrl('js/qtip/jquery.qtip-1.0.0-rc3.min.js') ?>"></script>
-    <script src="<?php echo $this->getSkinUrl('js/jquerytools.js') ?>"></script>
+    
+    <?php if($this->getLayout()->getBlock('root')->getBodyClass() == 'home'): ?>
+        <script src="<?php echo $this->getSkinUrl('js/waypoints.min.js') ?>"></script>
+    <?php else: ?>
+        <link href="<?php echo $this->getSkinUrl('js/ui/css/stages/jquery-ui-1.8.11.custom.css') ?>" rel="stylesheet" type="text/css" />
+        <script src="<?php echo $this->getSkinUrl('js/ui/js/jquery-ui-1.8.11.custom.min.js') ?>"></script>
+        <script src="<?php echo $this->getSkinUrl('js/qtip/jquery.qtip-1.0.0-rc3.min.js') ?>"></script>
+        <script src="<?php echo $this->getSkinUrl('js/jquerytools.js') ?>"></script>
+    <?php endif; ?>
+    
     <script src="<?php echo $this->getSkinUrl('js/stages.js') ?>"></script>
     <script src="<?php echo $this->getSkinUrl('js/stages_main.js') ?>"></script>
     <script src="<?php echo $this->getSkinUrl('js/project.js') ?>"></script>

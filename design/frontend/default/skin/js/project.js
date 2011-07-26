@@ -303,7 +303,8 @@ function ProjectTimeline()
             h = (stats.count * 100)/ 20;
             h = h > 80 ? 80 : h;
             dlCs = milestone.ms_status_display == 1 ? 'fin' : 
-                                            milestone.ms_status_display == 2 ? 'start' : 'non';
+                        milestone.ms_status_display == 2 ? 'start' :
+                            milestone.ms_status_display == 3 ? 'od' : 'non';
             statsStr += 'Todo lists - '+ stats.lists +'<br/>Todos total - '+ stats.count +'<br/>Completed - '+ stats.completed +'<br/>Uncompleted - '+ stats.uncompleted +'<br/>Comments - '+ stats.comments +'<br/>Hours - '+ stats.hours;
         }
         
@@ -535,7 +536,7 @@ function ProjectTimeline()
         var pDLead = $.trim($('#dlead').val());
 
         if(!pName || pName == '') {alert('Please choose a name for your project');return false;}
-        if(!pMLead || pMLead == '') {alert('Please choose a Marketig lead for the project');return false;}
+        if(!pMLead || pMLead == '') {alert('Please choose a Marketing lead for the project');return false;}
         if(!pDLead || pDLead == '') {alert('Please choose a Developing lead for the project');return false;}
 
         var pMLeadUser = stages.getUserByName(pMLead);

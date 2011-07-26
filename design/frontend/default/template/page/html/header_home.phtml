@@ -11,48 +11,128 @@
  */
 ?>
 <section id="features">
-	 <section class="scrollable">
-        <section class="items">
         	
-            <section class="os">
-            	<header id="logo">
-                    <h1><a href="<?php echo $this->getUrl('') ?>" title="Stages homepage">Stages | Basecamp productivity</a></h1>
-                </header>
-            	<h2>An open source basecamp companion that makes managing milestones a breeze.</h2>
-                <ul class="gallery">
-                	<li class="g1"><a href="#">View image</a></li>
-                    <li class="g2"><a href="#">View image</a></li>
-                    <li class="g3"><a href="#">View image</a></li>
-                </ul>
-                <a class="lm next">Looks cool, show me how to use it &raquo;</a>
-                <aside id="download"><a href="<?php echo 'http://github.com/hettema/Stages'?>"><img src="<?php echo $this->getSkinUrl('img/icn_dl.png') ?>" width="23" height="23" />Download Now</a></aside>
-            </section> <!-- end of open source -->
-            
-            <section class="ov">
-				<section id="key">            
-		           	<label>Key</label>
-                    <ul class="key">
-                        <li><span class="mktng"></span> Marketing</li>
-                        <li><span class="dvlp"></span> Development</li>
-                        <li><img src="<?php echo $this->getSkinUrl('img/ms.gif') ?>" width="10" height="10" alt="Milestone" /> Milestone</li>
-                        <li><img src="<?php echo $this->getSkinUrl('img/complete.gif') ?>" width="25" height="10" alt="Complete" /> Complete</li>
-                        <li><img src="<?php echo $this->getSkinUrl('img/started.gif') ?>" width="25" height="10" alt="started" /> Started</li>
-                        <li><img src="<?php echo $this->getSkinUrl('img/notstarted.gif') ?>" width="25" height="10" alt="Not Started" /> Not started</li>
-                    </ul>
-            	</section>
-                
-                <div id="bars">
-                	<div class="b1"></div>
-                    <div class="b2"></div>
-                    <div class="b3"></div>
-                    <div class="b4"></div>
-                </div>
-                
-                <h1>Hover a hotspot to discover a few features</h1>
-                
-            </section> <!-- end of overview -->
-            
-     	</section>
-     </section>    
+    <section class="os">
+        <header id="logo">
+            <h1><a href="<?php echo $this->getUrl('') ?>" title="Stages homepage">Stages | Basecamp productivity</a></h1>
+        </header>
+        <h2>Awesome milestone management. <small>(free and opensource)</small></h2>
+        <ul class="gallery">
+            <li class="g1"><a href="<?php echo $this->getSkinUrl('img/home/bg_overview.png') ?>">View image</a></li>
+            <li class="g2"><a href="<?php echo $this->getSkinUrl('img/home/add.png') ?>">View image</a></li>
+            <li class="g3"><a href="<?php echo $this->getSkinUrl('img/home/add.png') ?>">View image</a></li>
+        </ul>
+        <a class="lm next">Looks cool, show me how to use it &raquo;</a>
+        <aside id="download"><a href="https://github.com/hettema/Stages" target="_blank"><img src="<?php echo $this->getSkinUrl('img/icn_dl.png') ?>" width="23" height="23" />Download Source</a></aside>
+    </section> <!-- end of open source -->
+    
+    <section class="vis">
+    	
+        <header><h1>Size Matters. The taller the milestone the more todos it contains.</h1></header>
+    
+        <section id="key">            
+            <label>Key</label>
+            <ul class="key">
+                <li><span class="mktng"></span> Marketing</li>
+                <li><span class="dvlp"></span> Development</li>
+                <li><img src="<?php echo $this->getSkinUrl('img/ms.gif') ?>" width="10" height="10" alt="Milestone" /> Milestone</li>
+                <li><img src="<?php echo $this->getSkinUrl('img/complete.gif') ?>" width="25" height="10" alt="Complete" /> Complete</li>
+                <li><img src="<?php echo $this->getSkinUrl('img/started.gif') ?>" width="25" height="10" alt="started" /> Started</li>
+                <li><img src="<?php echo $this->getSkinUrl('img/notstarted.gif') ?>" width="25" height="10" alt="Not Started" /> Not started</li>
+                <li><img src="<?php echo $this->getSkinUrl('img/overdue.gif') ?>" width="25" height="10" alt="Overdue" /> Overdue</li>
+            </ul>
+        </section>
+        
+       	<div class="bars">
+            <div class="b1"><span>Done</span></div>
+            <div class="b2"><span>In progress</span></div>
+            <div class="b3"><span>Not Started</span></div>
+            <div class="b4"><span>Overdue</span></div>
+        </div>
+        
+		<a href="#" class="lm">Put faces to milestones &raquo;</a>
+    </section> <!-- end of visual -->
+    
+    <section class="av">
+    	<img src="<?php echo $this->getSkinUrl('img/home/avatars.jpg') ?>" width="567" height="588" alt="Avatars" />
+        <a href="#" class="lm">Suits &amp; Shirts together at last &raquo;</a>
+    </section>
+    
+    <section class="ss">
+    	<img src="<?php echo $this->getSkinUrl('img/home/suits_n_shirts.jpg') ?>" width="835" height="610" alt="Suits and Shirts" />
+        <section>
+        	<header>
+            	<hgroup>
+                	<h1>Marketing &amp; development together at last!</h1>
+                    <h2>Always see what the other department is doing</h2>
+                </hgroup>
+    		</header>
+   		</section>
+        <a href="#" class="lm">See the full picture &raquo;</a>
+    </section>
+    
+    <section class="ov">
+        <section id="key">            
+            <label>Key</label>
+            <ul class="key">
+                <li><span class="mktng"></span> Marketing</li>
+                <li><span class="dvlp"></span> Development</li>
+                <li><img src="<?php echo $this->getSkinUrl('img/ms.gif') ?>" width="10" height="10" alt="Milestone" /> Milestone</li>
+                <li><img src="<?php echo $this->getSkinUrl('img/complete.gif') ?>" width="25" height="10" alt="Complete" /> Complete</li>
+                <li><img src="<?php echo $this->getSkinUrl('img/started.gif') ?>" width="25" height="10" alt="started" /> Started</li>
+                <li><img src="<?php echo $this->getSkinUrl('img/notstarted.gif') ?>" width="25" height="10" alt="Not Started" /> Not started</li>
+                <li><img src="<?php echo $this->getSkinUrl('img/overdue.gif') ?>" width="25" height="10" alt="Overdue" /> Overdue</li>
+            </ul>
+        </section>
+        
+        <section id="stage">
+            <ul>
+                <li id="s1">1</li>
+                <li id="s2">2</li>
+                <li id="s6">3</li>
+                <li id="s4">9</li>
+                <li id="s5">8</li>
+                <li id="s3">7</li>
+                <li id="s7">5</li>
+                <li id="s8">10</li>
+                <li id="s9">4</li>
+                <li id="s10">6</li>
+                <li id="s11">11</li>
+                <li id="s12">12</li>
+            </ul>
+        </section>
+        
+        <section id="ft">
+            <dl>
+                <dt class="s1">1.</dt> <dd class="s1">The title of your basecamp project.</dd>
+                <dt class="s2">2.</dt> <dd class="s2">A stage is divided into four weeks, each block represents a week and each bar is a day in that week.</dd>
+                <dt class="s3">3.</dt> <dd class="s3">This is the name of a Milestone.</dd>
+                <dt class="s4">4.</dt> <dd class="s2">If your list is this tall, consider breaking it down into smaller To Do's.</dd>
+           </dl>
+           <dl class="centre">
+                <dt class="s5">5.</dt> <dd class="s5">A bar represents a To Do list. Dashed bars are marketing, solid bars are development. The size of your bar depends on how many items are in the list.</dd>
+                <dt class="s6">6.</dt> <dd class="s6">See when your To Do list was at its longest.</dd>
+                <dt class="s7">7.</dt> <dd class="s7">The start date of your project.</dd>
+                <dt class="s8">8.</dt> <dd class="s8">The timeline is divided into two groups. Marketing To Do's and development ToDo's.</dd>
+            </dl>
+            <dl>
+                <dt class="s9">9.</dt> <dd class="s9">The end date of your project. When you create a new project we give you a four week timeline by default. You can add more weeks if you need to one week at a time</dd>
+                <dt class="s10">10.</dt> <dd class="s10">Green bars means a list is complete, yellow means a list has been started and red means no work has been done yet./dd>
+                <dt class="s11">11.</dt> <dd class="s11">The person responsible for the Milestone.</dd>
+                <dt class="s12">12.</dt> <dd class="s12">These arrows let you skip backwards and forwards across the porjects timeline, one week at a time.</dd>
+            </dl>
+        </section>
+        
+    </section> <!-- end of overview -->
+    
+    <section class="git">
+    	<header id="logo">
+            <h1><a href="<?php echo $this->getUrl('') ?>" title="Stages homepage">Stages | Basecamp productivity</a></h1>
+        </header>
+        <h2>Download the source <small>Help us improve</small></h2>
+        <aside id="download"><a href="https://github.com/hettema/Stages" target="_blank"><img src="<?php echo $this->getSkinUrl('img/icn_dl.png') ?>" width="23" height="23" />Download the Source for free from Github</a></aside>
+	</section>
+    
 </section>
+
 <div id="message-zone" class="message-wrap"><?php echo $this->getChildHtml('session_messages') ?></div>
